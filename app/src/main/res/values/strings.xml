@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DalvikJVM</string>
+    <string name="launch">Launch</string>
+    <string name="keyboard">Keyboard</string>
+</resources>

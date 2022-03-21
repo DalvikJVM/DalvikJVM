@@ -1,0 +1,45 @@
+# Gradle files
+.gradle/
+
+# Ignore files output by build
+/[Bb]in/
+/[Bb]uild/
+/[Dd]ist/
+/[Dd]oc/
+/[Oo]ut/
+/[Dd]ump/
+
+# Ignore files created by posix people
+*~
+# Ignore vim swapfiles
+*.swp
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log/OS Files
+*.log
+
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
+
+# IntelliJ
+*.iml
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Keystore files
+*.jks
+*.keystore
+
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
+# Android Profiling
+*.hprof
