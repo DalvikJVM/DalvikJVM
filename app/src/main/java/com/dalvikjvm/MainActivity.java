@@ -441,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void runFleas() {
-        /*File dexInternalStoragePath = new File(cacheDir + "fleas.jar");
+        File dexInternalStoragePath = new File(cacheDir + "fleas.jar");
         if (dexInternalStoragePath.exists())
             dexInternalStoragePath.delete();
         try {
@@ -465,14 +465,13 @@ public class MainActivity extends AppCompatActivity {
             Class<?> client = dexLoader.loadClass("fleas");
             applet = (Applet)client.newInstance();
             applet.setCodeBase("https://logg.biz/runescape/2005-08/jagex.com/fleacircus/");
-            //applet.setSize(644, 390);
-            applet.setSize(800, 600);
+            applet.setSize(644, 390);
             applet.init();
             applet.start();
             setTarget(applet);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }*/
+        }
     }
 
     public void runRuneLite() {
@@ -720,8 +719,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Runtime.getRuntime().freeMemory();
 
         try { this.getSupportActionBar().hide(); } catch (NullPointerException e) {}
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
