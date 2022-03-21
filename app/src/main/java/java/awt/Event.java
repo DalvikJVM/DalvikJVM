@@ -54,7 +54,8 @@ public class Event {
     public static final int KEY_PRESS = 401;
     public static final int KEY_RELEASE = 402;
 
-    public Event(Object target, int id, Object arg) {
+    public Event(Object target, long when, int id, int x, int y, int key, int modifiers, Object arg)
+    {
         this.target = target;
         this.id = id;
         this.arg = arg;
@@ -65,6 +66,11 @@ public class Event {
         _keyChar = '\n';
         _awtKey = -1;
         _awtModifier = 0;
+    }
+
+    public Event(Object target, int id, Object arg) {
+        // TODO: Fill in x, y, etc.
+        this(target, System.currentTimeMillis(), id, 0, 0, 0, 0, null);
     }
 
     public int _getKey() {

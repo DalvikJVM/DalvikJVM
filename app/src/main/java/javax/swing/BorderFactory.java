@@ -30,6 +30,11 @@ public class BorderFactory {
         return createEmptyBorder(0, 0, 0, 0);
     }
 
+    public static Border createLineBorder(Color color) {
+        System.out.println("Unimplemented method BorderFactory.createLineBorder(" + color + ") called");
+        return new EmptyBorder(0, 0, 1, 1);
+    }
+
     public static Border createEmptyBorder(int top, int left, int bottom, int right) {
         System.out.println("Unimplemented method BorderFactory.createEmptyBorder(" + top + ", " + left + ", " + bottom + ", " + right + ") called");
         return new EmptyBorder(top, left, bottom, right);

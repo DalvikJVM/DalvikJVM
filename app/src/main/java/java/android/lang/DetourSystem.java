@@ -19,7 +19,7 @@
 
 package java.android.lang;
 
-import com.dalvikjvm.MainActivity;
+import com.dalvikjvm.DalvikJVM;
 
 import java.util.Properties;
 
@@ -42,13 +42,13 @@ public class DetourSystem {
     public static String getProperty(String key) {
         String ret = System.getProperty(key);
         if (key.equals("user.home"))
-            ret = MainActivity.cacheDir;
+            ret = DalvikJVM.cacheDir;
         if (key.equals("java.vendor"))
-            ret = "Oracle Corporation";
+            ret = DalvikJVM.config.getJREVersionInfo().vendor;
         if (key.equals("java.version"))
-            ret = "1.8.0_281";
+            ret = DalvikJVM.config.getJREVersionInfo().version;
         if (key.equals("java.vendor.url"))
-            ret = "http://java.oracle.com/";
+            ret = DalvikJVM.config.getJREVersionInfo().vendorURL;
         System.out.println("Detouring " + key + " = " + ret);
         return ret;
     }

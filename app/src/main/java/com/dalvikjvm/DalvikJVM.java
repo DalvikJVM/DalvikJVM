@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -35,6 +36,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.PathUtils;
 import dalvik.system.DexClassLoader;
 
 import javax.swing.*;
@@ -42,6 +44,7 @@ import java.android.awt.AndroidGraphicsDevice;
 import java.applet.Applet;
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -51,11 +54,12 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-public class MainActivity extends AppCompatActivity {
+public class DalvikJVM extends AppCompatActivity {
     public static Applet applet;
     public static InputMethodManager inputMethodManager;
-    public static MainActivity instance;
+    public static DalvikJVM instance;
     public static String cacheDir;
+    public static JVMConfig config;
     private boolean shiftPressed;
     private boolean altShiftPressed;
     private boolean ctrlPressed;
@@ -79,8 +83,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Intent codes
     public static final int _FILE_SELECT_CODE = 0;
+    public static final int _JAR_SELECT_CODE = 1;
+    public static final int _PERMISSION_SELECT_CODE = 2;
 
-    public MainActivity() {
+    public DalvikJVM() {
         super();
         instance = this;
         virtualShift = false;
@@ -269,6 +275,39 @@ public class MainActivity extends AppCompatActivity {
                 JFileChooser.instance._setResult(uri);
                 break;
             }
+            case _JAR_SELECT_CODE: {
+                if (resultCode != Activity.RESULT_OK)
+                    break;
+
+                Uri uri = data.getData();
+
+                // TODO: Allow user to define this config
+                config = new JVMConfig();
+                config.emulatedJREVersion = JVMConfig.EmulatedJREVersion.ORACLE_8;
+                config.classPath = JFileChooser.getPath(this, uri);
+                config.applet = false;
+                config.classMain = "Client/Launcher";
+                /*config.classMain = "fleas";
+                config.applet = true;
+                config.appletCodeBase = "https://logg.biz/runescape/2005-08/jagex.com/fleacircus/";
+                config.appletSize = new Dimension(644, 390);*/
+
+                // Define rest of config automatically
+                config.workingDirectory = config.classPath.substring(0, config.classPath.lastIndexOf("/"));
+
+                // TODO: Hide UI, this should be handled way better if we had a ui, lol
+                final Button button = findViewById(R.id.button_launch);
+                button.setEnabled(false);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Execute in DalvikJVM environment
+                        runDalvikJVM();
+                    }
+                }).start();
+                break;
+            }
         }
     }
 
@@ -438,6 +477,34 @@ public class MainActivity extends AppCompatActivity {
 
     public static Component getTarget() {
         return renderTarget;
+    }
+
+    public void runDalvikJVM() {
+        // Load and compile jar
+        File dexInternalStoragePath = new File(config.classPath);
+        String dexPath = compileJAR(dexInternalStoragePath.getAbsolutePath());
+
+        try {
+            // Load main class
+            dexLoader = new DexClassLoader(dexPath, "", null, getClassLoader());
+            Class<?> client = dexLoader.loadClass(config.classMain);
+
+            if (config.applet) {
+                // Running applet configuration
+                applet = (Applet) client.newInstance();
+                applet.setCodeBase(config.appletCodeBase);
+                applet.setSize(config.appletSize.width, config.appletSize.height);
+                applet.init();
+                applet.start();
+                setTarget(applet);
+            } else {
+                // Running desktop configuration
+                Method meth = client.getMethod("main", String[].class);
+                meth.invoke(null, (Object)new String[0]);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void runFleas() {
@@ -724,11 +791,19 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
-        if (result != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.INTERNET},
-                    1);
+        // Check if we need to request permissions
+        List<String> permissionRequest = new ArrayList<String>();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
+            permissionRequest.add(Manifest.permission.INTERNET);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            permissionRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            permissionRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        // Request needed permissions
+        if (permissionRequest.size() > 0) {
+            String[] permissions = permissionRequest.toArray(new String[permissionRequest.size()]);
+            ActivityCompat.requestPermissions(DalvikJVM.this, permissions, _PERMISSION_SELECT_CODE);
         }
 
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -741,18 +816,10 @@ public class MainActivity extends AppCompatActivity {
         button.setEnabled(getTarget() == null);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //runRSC();
-                        //runRSCPlus();
-                        //runRSCSinglePlayer();
-                        //runOSRS();
-                        runFleas();
-                        //runRuneLite();
-                    }
-                }).start();
-                button.setEnabled(false);
+                Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+                chooseFile.setType("*/*");
+                chooseFile = Intent.createChooser(chooseFile, "Choose a file");
+                startActivityForResult(chooseFile, _JAR_SELECT_CODE);
             }
         });
     }
@@ -1421,7 +1488,7 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_ALT_RIGHT)
             altAltPressed = true;
 
-        if (MainActivity.getTarget() == null)
+        if (DalvikJVM.getTarget() == null)
             return super.onKeyDown(keyCode, event);
 
         keyPressed[keyCode] = true;
@@ -1447,7 +1514,7 @@ public class MainActivity extends AppCompatActivity {
         if (keyCode == KeyEvent.KEYCODE_ALT_RIGHT)
             altAltPressed = false;
 
-        if (MainActivity.getTarget() == null)
+        if (DalvikJVM.getTarget() == null)
             return super.onKeyUp(keyCode, event);
 
         int releaseOffset = 0;

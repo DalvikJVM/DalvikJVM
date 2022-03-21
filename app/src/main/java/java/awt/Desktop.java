@@ -21,7 +21,7 @@ package java.awt;
 
 import android.content.Intent;
 import android.net.Uri;
-import com.dalvikjvm.MainActivity;
+import com.dalvikjvm.DalvikJVM;
 
 import java.net.URI;
 
@@ -42,7 +42,7 @@ public class Desktop {
 
     public void browse(URI location) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(location.toString()));
-        MainActivity.instance.startActivity(browserIntent);
+        DalvikJVM.instance.startActivity(browserIntent);
     }
 
     public static Desktop getDesktop() {

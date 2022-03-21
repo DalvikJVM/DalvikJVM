@@ -19,7 +19,7 @@
 
 package java.android.lang;
 
-import com.dalvikjvm.MainActivity;
+import com.dalvikjvm.DalvikJVM;
 import dalvik.system.BaseDexClassLoader;
 import dalvik.system.DexPathList;
 import org.objectweb.asm.ClassReader;
@@ -45,7 +45,7 @@ public abstract class DetourClassLoader extends ClassLoader {
 
         Field field = BaseDexClassLoader.class.getDeclaredField("pathList");
         field.setAccessible(true);
-        DexPathList list = (DexPathList)field.get(MainActivity.instance.dexLoader);
+        DexPathList list = (DexPathList)field.get(DalvikJVM.instance.dexLoader);
         field.setAccessible(false);
 
         Method method = DexPathList.class.getDeclaredMethod("addDexPath", new Class[]{String.class, File.class});
@@ -168,12 +168,12 @@ public abstract class DetourClassLoader extends ClassLoader {
 
         try {
             if (isCompiled(name))
-                return MainActivity.instance.dexLoader.loadClass(name);
+                return DalvikJVM.instance.dexLoader.loadClass(name);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        String dexPath = MainActivity.instance.compileClass(name, b, off, len);
+        String dexPath = DalvikJVM.instance.compileClass(name, b, off, len);
         try { DetourClassLoader.addPath(dexPath); } catch (Exception e) {}
         compiledClasses.add(name);
 
@@ -188,7 +188,7 @@ public abstract class DetourClassLoader extends ClassLoader {
         }
 
         try {
-            return MainActivity.instance.dexLoader.loadClass(name);
+            return DalvikJVM.instance.dexLoader.loadClass(name);
         } catch (Exception e) {
             e.printStackTrace();
         }

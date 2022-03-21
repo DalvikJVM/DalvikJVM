@@ -499,6 +499,11 @@ public abstract class Component implements ImageObserver {
         return visible;
     }
 
+    public boolean hasFocus() {
+        System.out.println("Unimplemented method Component.hasFocus() called");
+        return true;
+    }
+
     public void requestFocus() {
         System.out.println("Unimplemented method Component.requestFocus() called");
     }

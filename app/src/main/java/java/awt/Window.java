@@ -19,7 +19,7 @@
 
 package java.awt;
 
-import com.dalvikjvm.MainActivity;
+import com.dalvikjvm.DalvikJVM;
 
 import java.awt.event.WindowListener;
 
@@ -34,7 +34,7 @@ public abstract class Window extends Container {
     public void setVisible(boolean show) {
         super.setVisible(show);
         if (show)
-            MainActivity.setTarget(this);
+            DalvikJVM.setTarget(this);
     }
 
     public void toFront() {

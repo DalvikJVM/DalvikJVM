@@ -19,10 +19,10 @@
 
 package java.android.lang;
 
-import com.dalvikjvm.MainActivity;
+import com.dalvikjvm.DalvikJVM;
 
 public class DetourThread {
     public static ClassLoader getClassLoader(ClassLoader classLoader) {
-        return MainActivity.instance.dexLoader;
+        return DalvikJVM.instance.dexLoader;
     }
 }

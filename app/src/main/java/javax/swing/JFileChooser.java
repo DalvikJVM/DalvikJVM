@@ -23,7 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import com.dalvikjvm.MainActivity;
+import com.dalvikjvm.DalvikJVM;
 
 import java.awt.*;
 import java.io.File;
@@ -55,7 +55,7 @@ public class JFileChooser extends JComponent {
 
         if (path.contains("com.android.externalstorage.documents")) {
             int index = path.indexOf('%') + 3;
-            filePath = path.substring(index);
+            filePath = path.substring(index).replaceAll("%2F", "/");
             path = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
 
@@ -72,7 +72,7 @@ public class JFileChooser extends JComponent {
             selectedFile = null;
         } else {
             returnCode = APPROVE_OPTION;
-            String path = getPath(MainActivity.instance, uri);
+            String path = getPath(DalvikJVM.instance, uri);
             if (path != null)
                 selectedFile = new File(path);
             else
@@ -115,7 +115,7 @@ public class JFileChooser extends JComponent {
 
         try {
             instance = this;
-            MainActivity.instance.startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), MainActivity._FILE_SELECT_CODE);
+            DalvikJVM.instance.startActivityForResult(Intent.createChooser(intent, "Select a File to Upload"), DalvikJVM._FILE_SELECT_CODE);
         } catch (Exception e) {
             e.printStackTrace();
             return ERROR_OPTION;

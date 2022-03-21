@@ -67,7 +67,7 @@ public class MainCanvas extends View {
 
     private final int TOUCHPAD_LEFTCLICK_TIME = 200;
     private final int TOUCHPAD_RIGHTCLICK_TIME = 300;
-    private float TOUCHPAD_MOVE_DEADZONE = MainActivity.convertDpToPixel(5);
+    private float TOUCHPAD_MOVE_DEADZONE = DalvikJVM.convertDpToPixel(5);
     public static final int TOUCHPAD_CLICK_DELAY = 50;
 
     public static final int KEY_REPEAT_DELAY = 50;
@@ -116,7 +116,7 @@ public class MainCanvas extends View {
     }
 
     private boolean drawButton(int id, Canvas canvas, int x, int y, int w, int h, String str, boolean down) {
-        w = Math.max(w, (int)MainActivity.convertDpToPixel(64.0f));
+        w = Math.max(w, (int) DalvikJVM.convertDpToPixel(64.0f));
 
         boolean isPressed = false;
         Rect dimensions = new Rect(x, y, x + w, y + h);
@@ -162,7 +162,7 @@ public class MainCanvas extends View {
         paint.setAlpha(64);
         canvas.drawRect(dimensions, paint);
         paint.setColor(Color.WHITE);
-        paint.setTextSize(MainActivity.convertDpToPixel(16.0f));
+        paint.setTextSize(DalvikJVM.convertDpToPixel(16.0f));
         Rect renderBounds = new Rect();
         paint.getTextBounds(str, 0, str.length(), renderBounds);
         canvas.drawText(str, x + (w / 2) - (paint.measureText(str) / 2), y + (h / 2) + (renderBounds.height() / 4), paint);
@@ -196,7 +196,7 @@ public class MainCanvas extends View {
             long diff = System.currentTimeMillis() - lastJoystickEvent.when;
             if (diff >= KEY_REPEAT_DELAY) {
                 lastJoystickEvent.when = System.currentTimeMillis();
-                MainActivity.instance.addEventQueue(lastJoystickEvent);
+                DalvikJVM.instance.addEventQueue(lastJoystickEvent);
             }
             return;
         }
@@ -204,9 +204,9 @@ public class MainCanvas extends View {
         if (lastJoystickEvent != null) {
             lastJoystickEvent.id = Event.KEY_RELEASE;
             lastJoystickEvent.when = System.currentTimeMillis();
-            MainActivity.instance.addEventQueue(lastJoystickEvent);
+            DalvikJVM.instance.addEventQueue(lastJoystickEvent);
             released = true;
-            delay = lastJoystickEvent.when + MainActivity.KEYBOARD_DELAY;
+            delay = lastJoystickEvent.when + DalvikJVM.KEYBOARD_DELAY;
             System.out.println("key up");
         }
 
@@ -219,13 +219,13 @@ public class MainCanvas extends View {
         if (lastJoystickEvent != null) {
             if (released)
                 lastJoystickEvent.when = delay;
-            MainActivity.instance.addEventQueue(lastJoystickEvent);
+            DalvikJVM.instance.addEventQueue(lastJoystickEvent);
             System.out.println("key down");
         }
     }
 
     private boolean drawJoystick(Canvas canvas, int x, int y, int radius, int innerRadius) {
-        int dpRadius = (int)MainActivity.convertDpToPixel(radius);
+        int dpRadius = (int) DalvikJVM.convertDpToPixel(radius);
         int color = Color.BLUE;
         if (joystickIndex != -1)
             color = Color.WHITE;
@@ -255,21 +255,21 @@ public class MainCanvas extends View {
                     Event evt = null;
                     if (Math.abs(axisX) >= JOYSTICK_DEADZONE) {
                         if (axisX < 0.0f)
-                            evt = MainActivity.instance.convertAndroidKeycode(KeyEvent.KEYCODE_DPAD_UP, Event.KEY_PRESS, false);
+                            evt = DalvikJVM.instance.convertAndroidKeycode(KeyEvent.KEYCODE_DPAD_UP, Event.KEY_PRESS, false);
                         else if (axisX > 0.0f)
-                            evt = MainActivity.instance.convertAndroidKeycode(KeyEvent.KEYCODE_DPAD_DOWN, Event.KEY_PRESS, false);
+                            evt = DalvikJVM.instance.convertAndroidKeycode(KeyEvent.KEYCODE_DPAD_DOWN, Event.KEY_PRESS, false);
                         setJoystickEvent(evt, false);
                     }
 
                     if (Math.abs(axisY) >= JOYSTICK_DEADZONE) {
                         if (axisY < 0.0f)
-                            evt = MainActivity.instance.convertAndroidKeycode(KeyEvent.KEYCODE_DPAD_RIGHT, Event.KEY_PRESS, false);
+                            evt = DalvikJVM.instance.convertAndroidKeycode(KeyEvent.KEYCODE_DPAD_RIGHT, Event.KEY_PRESS, false);
                         else if (axisY > 0.0f)
-                            evt = MainActivity.instance.convertAndroidKeycode(KeyEvent.KEYCODE_DPAD_LEFT, Event.KEY_PRESS, false);
+                            evt = DalvikJVM.instance.convertAndroidKeycode(KeyEvent.KEYCODE_DPAD_LEFT, Event.KEY_PRESS, false);
                         setJoystickEvent(evt, true);
                     }
 
-                    canvas.drawCircle(x, y, MainActivity.convertDpToPixel(innerRadius), paint);
+                    canvas.drawCircle(x, y, DalvikJVM.convertDpToPixel(innerRadius), paint);
                     paint.setAlpha(255);
                     paint.setColor(Color.WHITE);
 
@@ -282,7 +282,7 @@ public class MainCanvas extends View {
                     return true;
         }
 
-        canvas.drawCircle(x, y, MainActivity.convertDpToPixel(innerRadius), paint);
+        canvas.drawCircle(x, y, DalvikJVM.convertDpToPixel(innerRadius), paint);
         setJoystickEvent(null, false);
         setJoystickEvent(null, true);
         paint.setAlpha(255);
@@ -292,8 +292,8 @@ public class MainCanvas extends View {
     }
 
     private boolean drawScrollWheel(Canvas canvas, int x, int y, int radius, int innerRadius) {
-        int dpRadius = (int)MainActivity.convertDpToPixel(radius);
-        int dpInnerRadius = (int)MainActivity.convertDpToPixel(innerRadius);
+        int dpRadius = (int) DalvikJVM.convertDpToPixel(radius);
+        int dpInnerRadius = (int) DalvikJVM.convertDpToPixel(innerRadius);
         int color = Color.BLUE;
         if (scrollWheelIndex != -1)
             color = Color.WHITE;
@@ -321,9 +321,9 @@ public class MainCanvas extends View {
             Event evt = null;
             if (Math.abs(axisY) >= JOYSTICK_DEADZONE) {
                 if (axisY < 0.0f)
-                    evt = new Event(MainActivity.getTarget(), Event._MOUSE_SCROLL_UP, null);
+                    evt = new Event(DalvikJVM.getTarget(), Event._MOUSE_SCROLL_UP, null);
                 else if (axisY > 0.0f)
-                    evt = new Event(MainActivity.getTarget(), Event._MOUSE_SCROLL_DOWN, null);
+                    evt = new Event(DalvikJVM.getTarget(), Event._MOUSE_SCROLL_DOWN, null);
             }
 
             long elapsed = System.currentTimeMillis() - lastScrollTime;
@@ -332,11 +332,11 @@ public class MainCanvas extends View {
                 float mY = mouseY - dstRect.top;
                 float xScale = mX / dstRect.width();
                 float yScale = mY / dstRect.height();
-                boolean shift = MainActivity.instance.isShiftPressed();
-                boolean ctrl = MainActivity.instance.isCtrlPressed();
-                boolean alt = MainActivity.instance.isAltPressed();
-                evt.x = (int)(MainActivity.getTarget().getWidth() * xScale);
-                evt.y = (int)(MainActivity.getTarget().getHeight() * yScale);
+                boolean shift = DalvikJVM.instance.isShiftPressed();
+                boolean ctrl = DalvikJVM.instance.isCtrlPressed();
+                boolean alt = DalvikJVM.instance.isAltPressed();
+                evt.x = (int)(DalvikJVM.getTarget().getWidth() * xScale);
+                evt.y = (int)(DalvikJVM.getTarget().getHeight() * yScale);
                 evt._awtAmount = 3;
 
                 if (shift)
@@ -351,10 +351,10 @@ public class MainCanvas extends View {
                 System.out.println("Axis: " + invAxisY);
                 System.out.println("Delay: " + delayTime);
                 lastScrollTime = System.currentTimeMillis() + delayTime;
-                MainActivity.instance.addEventQueue(evt);
+                DalvikJVM.instance.addEventQueue(evt);
             }
 
-            canvas.drawCircle(x, y, MainActivity.convertDpToPixel(innerRadius), paint);
+            canvas.drawCircle(x, y, DalvikJVM.convertDpToPixel(innerRadius), paint);
             paint.setAlpha(255);
             paint.setColor(Color.WHITE);
 
@@ -367,7 +367,7 @@ public class MainCanvas extends View {
             return true;
         }
 
-        canvas.drawCircle(x, y, MainActivity.convertDpToPixel(innerRadius), paint);
+        canvas.drawCircle(x, y, DalvikJVM.convertDpToPixel(innerRadius), paint);
         paint.setAlpha(255);
         paint.setColor(Color.WHITE);
 
@@ -391,16 +391,16 @@ public class MainCanvas extends View {
 
         synchronized (statusTextLock) {
             if (statusText != null) {
-                paint.setTextSize(MainActivity.convertDpToPixel(16.0f));
+                paint.setTextSize(DalvikJVM.convertDpToPixel(16.0f));
                 paint.setColor(Color.WHITE);
                 canvas.drawText(statusText, 0, getHeight() - 128, paint);
             }
         }
 
         // Process java event queue
-        MainActivity.instance.processEventQueue();
+        DalvikJVM.instance.processEventQueue();
 
-        if (MainActivity.getTarget() == null)
+        if (DalvikJVM.getTarget() == null)
             return;
 
         if (mouseMode == MODE_TOUCHPAD && canTouchpadClick && touchpadClickCount > 0) {
@@ -411,13 +411,13 @@ public class MainCanvas extends View {
                 float y = mouseY - dstRect.top;
                 float xScale = x / dstRect.width();
                 float yScale = y / dstRect.height();
-                boolean shift = MainActivity.instance.isShiftPressed();
-                boolean ctrl = MainActivity.instance.isCtrlPressed();
-                boolean alt = MainActivity.instance.isAltPressed();
-                Event evt = new Event(MainActivity.getTarget(), Event.MOUSE_DOWN, null);
-                Point translatePoint = MainActivity.getTarget().getGraphics()._getTranslate();
-                evt.x = (int) (MainActivity.getTarget().getWidth() * xScale) - translatePoint.x;
-                evt.y = (int) (MainActivity.getTarget().getHeight() * yScale) - translatePoint.y;
+                boolean shift = DalvikJVM.instance.isShiftPressed();
+                boolean ctrl = DalvikJVM.instance.isCtrlPressed();
+                boolean alt = DalvikJVM.instance.isAltPressed();
+                Event evt = new Event(DalvikJVM.getTarget(), Event.MOUSE_DOWN, null);
+                Point translatePoint = DalvikJVM.getTarget().getGraphics()._getTranslate();
+                evt.x = (int) (DalvikJVM.getTarget().getWidth() * xScale) - translatePoint.x;
+                evt.y = (int) (DalvikJVM.getTarget().getHeight() * yScale) - translatePoint.y;
 
                 if (shift)
                     evt._awtModifier |= InputEvent.SHIFT_DOWN_MASK;
@@ -425,7 +425,7 @@ public class MainCanvas extends View {
                     evt._awtModifier |= InputEvent.CTRL_DOWN_MASK;
                 if (alt)
                     evt._awtModifier |= InputEvent.ALT_DOWN_MASK;
-                MainActivity.instance.addEventQueue(evt);
+                DalvikJVM.instance.addEventQueue(evt);
                 canTouchpadClick = false;
             }
 
@@ -435,13 +435,13 @@ public class MainCanvas extends View {
                     float y = mouseY - dstRect.top;
                     float xScale = x / dstRect.width();
                     float yScale = y / dstRect.height();
-                    boolean shift = MainActivity.instance.isShiftPressed();
-                    boolean ctrl = MainActivity.instance.isCtrlPressed();
-                    boolean alt = MainActivity.instance.isAltPressed();
-                    Event evt = new Event(MainActivity.getTarget(), Event.MOUSE_DOWN, null);
-                    Point translatePoint = MainActivity.getTarget().getGraphics()._getTranslate();
-                    evt.x = (int) (MainActivity.getTarget().getWidth() * xScale) - translatePoint.x;
-                    evt.y = (int) (MainActivity.getTarget().getHeight() * yScale) - translatePoint.y;
+                    boolean shift = DalvikJVM.instance.isShiftPressed();
+                    boolean ctrl = DalvikJVM.instance.isCtrlPressed();
+                    boolean alt = DalvikJVM.instance.isAltPressed();
+                    Event evt = new Event(DalvikJVM.getTarget(), Event.MOUSE_DOWN, null);
+                    Point translatePoint = DalvikJVM.getTarget().getGraphics()._getTranslate();
+                    evt.x = (int) (DalvikJVM.getTarget().getWidth() * xScale) - translatePoint.x;
+                    evt.y = (int) (DalvikJVM.getTarget().getHeight() * yScale) - translatePoint.y;
 
                     if (shift)
                         evt._awtModifier |= InputEvent.SHIFT_DOWN_MASK;
@@ -450,14 +450,14 @@ public class MainCanvas extends View {
                     if (alt)
                         evt._awtModifier |= InputEvent.ALT_DOWN_MASK;
 
-                    MainActivity.instance.addEventQueue(evt);
+                    DalvikJVM.instance.addEventQueue(evt);
                     Event upEvent = new Event(evt.target, Event.MOUSE_UP, evt.arg);
                     upEvent.x = evt.x;
                     upEvent.y = evt.y;
                     upEvent.modifiers = evt.modifiers;
                     upEvent._awtModifier = evt._awtModifier;
                     upEvent.when = evt.when + TOUCHPAD_CLICK_DELAY;
-                    MainActivity.instance.addEventQueue(upEvent);
+                    DalvikJVM.instance.addEventQueue(upEvent);
                     canTouchpadClick = false;
                     touchpadClickCount = 0;
                 }
@@ -471,13 +471,13 @@ public class MainCanvas extends View {
                 float y = mouseY - dstRect.top;
                 float xScale = x / dstRect.width();
                 float yScale = y / dstRect.height();
-                boolean shift = MainActivity.instance.isShiftPressed();
-                boolean ctrl = MainActivity.instance.isCtrlPressed();
-                boolean alt = MainActivity.instance.isAltPressed();
-                Event evt = new Event(MainActivity.getTarget(), Event.MOUSE_DOWN, null);
-                Point translatePoint = MainActivity.getTarget().getGraphics()._getTranslate();
-                evt.x = (int) (MainActivity.getTarget().getWidth() * xScale) - translatePoint.x;
-                evt.y = (int) (MainActivity.getTarget().getHeight() * yScale) - translatePoint.y;
+                boolean shift = DalvikJVM.instance.isShiftPressed();
+                boolean ctrl = DalvikJVM.instance.isCtrlPressed();
+                boolean alt = DalvikJVM.instance.isAltPressed();
+                Event evt = new Event(DalvikJVM.getTarget(), Event.MOUSE_DOWN, null);
+                Point translatePoint = DalvikJVM.getTarget().getGraphics()._getTranslate();
+                evt.x = (int) (DalvikJVM.getTarget().getWidth() * xScale) - translatePoint.x;
+                evt.y = (int) (DalvikJVM.getTarget().getHeight() * yScale) - translatePoint.y;
                 evt.modifiers |= Event.META_MASK;
 
                 if (shift)
@@ -489,26 +489,26 @@ public class MainCanvas extends View {
 
                 evt._awtModifier |= InputEvent.BUTTON3_DOWN_MASK | InputEvent.META_DOWN_MASK;
 
-                MainActivity.instance.addEventQueue(evt);
-                Event upEvent = new Event(MainActivity.getTarget(), Event.MOUSE_UP, null);
+                DalvikJVM.instance.addEventQueue(evt);
+                Event upEvent = new Event(DalvikJVM.getTarget(), Event.MOUSE_UP, null);
                 upEvent.x = evt.x;
                 upEvent.y = evt.y;
                 upEvent.when = evt.when + TOUCHPAD_CLICK_DELAY;
                 upEvent.modifiers = evt.modifiers;
                 upEvent._awtModifier = evt._awtModifier;
-                MainActivity.instance.addEventQueue(upEvent);
+                DalvikJVM.instance.addEventQueue(upEvent);
                 canTouchpadClick = false;
                 touchpadClickCount = 0;
             }
         }
 
-        AndroidGraphics graphics = (AndroidGraphics)MainActivity.getTarget().getGraphics();
-        Rect srcRect = new Rect(0, 0, MainActivity.getTarget().getWidth(), MainActivity.getTarget().getHeight());
+        AndroidGraphics graphics = (AndroidGraphics) DalvikJVM.getTarget().getGraphics();
+        Rect srcRect = new Rect(0, 0, DalvikJVM.getTarget().getWidth(), DalvikJVM.getTarget().getHeight());
         float scale = (float)srcRect.width() / srcRect.height();
 
         // Initialize java buffer
         Rect r = new Rect();
-        View rootview = MainActivity.instance.getWindow().getDecorView();
+        View rootview = DalvikJVM.instance.getWindow().getDecorView();
         rootview.getWindowVisibleDisplayFrame(r);
         int w = (int)(getHeight() * scale);
         int h = getHeight();
@@ -527,8 +527,8 @@ public class MainCanvas extends View {
         Rect drawDstRect = new Rect(dstRect.left, dstRect.top + yOffset, dstRect.right, dstRect.bottom + yOffset);
 
         // Draw java buffer
-        MainActivity.getTarget().repaint();
-        MainActivity.getTarget()._paint(canvas, paint);
+        DalvikJVM.getTarget().repaint();
+        DalvikJVM.getTarget()._paint(canvas, paint);
         canvas.drawBitmap(graphics._getBitmap(), srcRect, drawDstRect, paint);
 
         // Draw Mouse
@@ -540,10 +540,10 @@ public class MainCanvas extends View {
         canvas.drawBitmap(mouseBitmap,  new Rect(0, 0, mouseBitmap.getWidth(), mouseBitmap.getHeight()),
                 new Rect((int)mouseCoordScaleX, (int)mouseCoordScaleY + yOffset, (int)mouseCoordScaleX + scaledWidth, (int)mouseCoordScaleY + scaledHeight + yOffset), paint);
 
-        if (MainActivity.instance.hasFocus) {
+        if (DalvikJVM.instance.hasFocus) {
             // Draw app ui
-            if (drawButton(0, canvas, 0, 0, dstRect.left - 4, (int) MainActivity.convertDpToPixel(64.0f), "Keyboard", false)) {
-                MainActivity.inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            if (drawButton(0, canvas, 0, 0, dstRect.left - 4, (int) DalvikJVM.convertDpToPixel(64.0f), "Keyboard", false)) {
+                DalvikJVM.inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                 //mouseConsumed = true;
             }
 
@@ -551,15 +551,15 @@ public class MainCanvas extends View {
                 // Arrow key joystick
                 int radius = 64;
                 int innerRadius = 48;
-                int joyX = (int) MainActivity.convertDpToPixel(radius) + (int) MainActivity.convertDpToPixel(JOYSTICK_BORDER_SIZE);
-                int joyY = getHeight() - (int) MainActivity.convertDpToPixel(radius) - (int) MainActivity.convertDpToPixel(JOYSTICK_BORDER_SIZE);// - (getHeight() - r.height());
+                int joyX = (int) DalvikJVM.convertDpToPixel(radius) + (int) DalvikJVM.convertDpToPixel(JOYSTICK_BORDER_SIZE);
+                int joyY = getHeight() - (int) DalvikJVM.convertDpToPixel(radius) - (int) DalvikJVM.convertDpToPixel(JOYSTICK_BORDER_SIZE);// - (getHeight() - r.height());
                 if (drawJoystick(canvas, joyX, joyY, radius, innerRadius)) {
                     //mouseConsumed = true;
                 }
 
                 innerRadius = 32;
-                joyX = (int)MainActivity.convertDpToPixel(radius) + (int)MainActivity.convertDpToPixel(JOYSTICK_BORDER_SIZE);
-                joyY -= (MainActivity.convertDpToPixel(radius) * 2) + MainActivity.convertDpToPixel(INPUT_SEPERATOR_SIZE);
+                joyX = (int) DalvikJVM.convertDpToPixel(radius) + (int) DalvikJVM.convertDpToPixel(JOYSTICK_BORDER_SIZE);
+                joyY -= (DalvikJVM.convertDpToPixel(radius) * 2) + DalvikJVM.convertDpToPixel(INPUT_SEPERATOR_SIZE);
                 if (drawScrollWheel(canvas, joyX, joyY, radius, innerRadius)) {
                 }
 
@@ -585,7 +585,7 @@ public class MainCanvas extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (MainActivity.getTarget() == null)
+        if (DalvikJVM.getTarget() == null)
             return super.onTouchEvent(event);
 
         int touchIndex = -1;
@@ -654,14 +654,14 @@ public class MainCanvas extends View {
             float y = mouseY - dstRect.top;
             float xScale = x / dstRect.width();
             float yScale = y / dstRect.height();
-            boolean shift = MainActivity.instance.isShiftPressed();
-            boolean ctrl = MainActivity.instance.isCtrlPressed();
-            boolean alt = MainActivity.instance.isAltPressed();
+            boolean shift = DalvikJVM.instance.isShiftPressed();
+            boolean ctrl = DalvikJVM.instance.isCtrlPressed();
+            boolean alt = DalvikJVM.instance.isAltPressed();
 
-            Point translatePoint = MainActivity.getTarget().getGraphics()._getTranslate();
-            Event evt = new Event(MainActivity.getTarget(), 0, null);
-            evt.x = (int) (MainActivity.getTarget().getWidth() * xScale) - translatePoint.x;
-            evt.y = (int) (MainActivity.getTarget().getHeight() * yScale) - translatePoint.y;
+            Point translatePoint = DalvikJVM.getTarget().getGraphics()._getTranslate();
+            Event evt = new Event(DalvikJVM.getTarget(), 0, null);
+            evt.x = (int) (DalvikJVM.getTarget().getWidth() * xScale) - translatePoint.x;
+            evt.y = (int) (DalvikJVM.getTarget().getHeight() * yScale) - translatePoint.y;
 
             int buttonMask = java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
 
@@ -686,7 +686,7 @@ public class MainCanvas extends View {
                     if (eventIndex == mouseIndex) {
                         if (mouseMode == MODE_TOUCHSCREEN) {
                             evt.id = Event.MOUSE_DOWN;
-                            MainActivity.instance.addEventQueue(evt);
+                            DalvikJVM.instance.addEventQueue(evt);
                         }
 
                         if (mouseMode == MODE_TOUCHPAD) {
@@ -715,7 +715,7 @@ public class MainCanvas extends View {
                     if (eventIndex == mouseIndex) {
                         if (mouseMode == MODE_TOUCHSCREEN) {
                             evt.id = Event.MOUSE_UP;
-                            MainActivity.instance.addEventQueue(evt);
+                            DalvikJVM.instance.addEventQueue(evt);
                         }
 
                         if (touchpadClickCount == 0 && canTouchpadClick && mouseMode == MODE_TOUCHPAD) {
@@ -724,7 +724,7 @@ public class MainCanvas extends View {
 
                         if (!canTouchpadClick && mouseMode == MODE_TOUCHPAD && touchpadClickCount >= 2) {
                             evt.id = Event.MOUSE_UP;
-                            MainActivity.instance.addEventQueue(evt);
+                            DalvikJVM.instance.addEventQueue(evt);
                             touchpadClickCount = 0;
                         }
 
@@ -737,14 +737,14 @@ public class MainCanvas extends View {
                     if (eventIndex == mouseIndex) {
                         if (mouseMode == MODE_TOUCHSCREEN) {
                             evt.id = Event.MOUSE_DRAG;
-                            MainActivity.instance.addEventQueue(evt);
+                            DalvikJVM.instance.addEventQueue(evt);
                         }
 
                         if (mouseMode == MODE_TOUCHPAD) {
                             evt.id = Event.MOUSE_MOVE;
                             if (!canTouchpadClick && touchpadClickCount >= 2)
                                 evt.id = Event.MOUSE_DRAG;
-                            MainActivity.instance.addEventQueue(evt);
+                            DalvikJVM.instance.addEventQueue(evt);
                         }
                     }
                     break;

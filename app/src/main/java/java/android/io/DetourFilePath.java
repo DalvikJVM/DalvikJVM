@@ -20,7 +20,7 @@
 package java.android.io;
 
 import android.os.Environment;
-import com.dalvikjvm.MainActivity;
+import com.dalvikjvm.DalvikJVM;
 
 import java.io.File;
 
@@ -29,7 +29,7 @@ public class DetourFilePath {
         System.out.println("Path: " + str);
 
         // Check if string is already converted
-        if (str.startsWith(MainActivity.cacheDir) || str.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+        if (str.startsWith(DalvikJVM.cacheDir) || str.startsWith(DalvikJVM.config.workingDirectory)) {
             System.out.println("Accessing path '" + str + "'");
             return str;
         }
@@ -50,7 +50,7 @@ public class DetourFilePath {
         ret = ret.replaceAll(":", "");
 
         // Make sure it points to somewhere we can make files
-        ret = MainActivity.cacheDir + File.separator + ret;
+        ret = DalvikJVM.config.workingDirectory + File.separator + ret;
 
         File f = new File(ret);
         ret = f.getAbsolutePath();

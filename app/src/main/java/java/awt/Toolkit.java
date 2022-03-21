@@ -21,10 +21,15 @@ package java.awt;
 
 import java.android.awt.AndroidToolkit;
 import java.awt.datatransfer.Clipboard;
+import java.awt.event.AWTEventListener;
 
 public abstract class Toolkit {
     private static Toolkit instance = new AndroidToolkit();
     private EventQueue eventQueue = new EventQueue();
+
+    public void addAWTEventListener(AWTEventListener listener, long eventMask) {
+        System.out.println("Unimplemented method Toolkit.addAWTEventListener(" + listener + ", " + eventMask + ") called");
+    }
 
     public Clipboard getSystemClipboard() {
         System.out.println("Unimplemented method Toolkit.getSystemClipboard() called");
