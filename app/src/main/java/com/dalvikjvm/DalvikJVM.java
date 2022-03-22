@@ -45,6 +45,7 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.jar.Attributes;
@@ -245,7 +246,7 @@ public class DalvikJVM extends AppCompatActivity {
     }
 
     public String hashFile(File file) {
-        byte[] buffer= new byte[8192];
+        byte[] buffer = new byte[8192];
         int count;
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -339,7 +340,6 @@ public class DalvikJVM extends AppCompatActivity {
         inputFile.delete();
 
         File outputFile = new File(getDir("dex", Context.MODE_PRIVATE), inputHash + ".dex");
-        //outputFile.delete();
 
         if (!outputFile.exists()) {
             File dexFile = new File(targetDirectory.getAbsolutePath() + "/__tmp.dex");
@@ -390,9 +390,6 @@ public class DalvikJVM extends AppCompatActivity {
 
         String inputHash = hashFile(inputFile);
         File outputFile = new File(getDir("dex", Context.MODE_PRIVATE), inputHash + ".zip");
-
-        // If you uncomment this, it invalidates the cache every time
-        outputFile.delete();
 
         if (!outputFile.exists()) {
             try {
