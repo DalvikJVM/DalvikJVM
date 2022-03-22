@@ -1,6 +1,7 @@
 package com.dalvikjvm;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public class JVMConfig {
     public static class JREVersionInfo
@@ -36,6 +37,12 @@ public class JVMConfig {
             new JREVersionInfo(JREVersion.JRE_8, "Oracle Corporation", "1.8.0_281", "http://java.oracle.com/"),
     };
 
+    public JVMConfig()
+    {
+        desktopArgs = new String[0];
+        appletParameters = new HashMap<String, String>();
+    }
+
     public JREVersionInfo getJREVersionInfo()
     {
         return JRE_VERSION_INFO[emulatedJREVersion.ordinal()];
@@ -50,4 +57,8 @@ public class JVMConfig {
     // Applet Parameters
     public String appletCodeBase;
     public Dimension appletSize;
+    HashMap<String, String> appletParameters;
+
+    // Desktop Parameters
+    public String[] desktopArgs;
 }

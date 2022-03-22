@@ -25,7 +25,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -36,7 +35,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.PathUtils;
 import dalvik.system.DexClassLoader;
 
 import javax.swing.*;
@@ -492,6 +490,7 @@ public class DalvikJVM extends AppCompatActivity {
             if (config.applet) {
                 // Running applet configuration
                 applet = (Applet) client.newInstance();
+                applet.setParameters(config.appletParameters);
                 applet.setCodeBase(config.appletCodeBase);
                 applet.setSize(config.appletSize.width, config.appletSize.height);
                 applet.init();
@@ -500,283 +499,11 @@ public class DalvikJVM extends AppCompatActivity {
             } else {
                 // Running desktop configuration
                 Method meth = client.getMethod("main", String[].class);
-                meth.invoke(null, (Object)new String[0]);
+                meth.invoke(null, (Object)config.desktopArgs);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void runFleas() {
-        File dexInternalStoragePath = new File(cacheDir + "fleas.jar");
-        if (dexInternalStoragePath.exists())
-            dexInternalStoragePath.delete();
-        try {
-            BufferedInputStream bis = new BufferedInputStream(getResources().openRawResource(R.raw.fleas));
-            OutputStream dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
-            byte[] buf = new byte[1024];
-            int len;
-            while((len = bis.read(buf, 0, 1024)) > 0)
-                dexWriter.write(buf, 0, len);
-            dexWriter.close();
-            bis.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        String dexPath = compileJAR(dexInternalStoragePath.getAbsolutePath());
-
-        try {
-            dexLoader = new DexClassLoader(dexPath, "", null, getClassLoader());
-
-            Class<?> client = dexLoader.loadClass("fleas");
-            applet = (Applet)client.newInstance();
-            applet.setCodeBase("https://logg.biz/runescape/2005-08/jagex.com/fleacircus/");
-            applet.setSize(644, 390);
-            applet.init();
-            applet.start();
-            setTarget(applet);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void runRuneLite() {
-        /*File dexInternalStoragePath = new File(cacheDir + "RuneLite.jar");
-        //File dexInternalStoragePath = new File(getDir("dex", Context.MODE_PRIVATE), "latest.dex");
-        if (dexInternalStoragePath.exists())
-            dexInternalStoragePath.delete();
-        try {
-            BufferedInputStream bis = new BufferedInputStream(getResources().openRawResource(R.raw.runelite_d8));
-            OutputStream dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
-            byte[] buf = new byte[1024];
-            int len;
-            while((len = bis.read(buf, 0, 1024)) > 0)
-                dexWriter.write(buf, 0, len);
-            dexWriter.close();
-            bis.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        String dexPath = compileJAR(dexInternalStoragePath.getAbsolutePath());
-
-        try {
-            PathClassLoader loader = new PathClassLoader(dexPath, getClassLoader());
-            Class<?> client = loader.loadClass("net.runelite.launcher.Launcher");
-            Method meth = client.getMethod("main", String[].class);
-            meth.invoke(null, (Object)new String[0]);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }*/
-    }
-
-    public void runRSCSinglePlayer() {
-        /*File dexInternalStoragePath = new File(cacheDir + "RSC-Single-Player.jar");
-        copyFile(R.raw.cache, new File(cacheDir + "cache.zip"));
-        try {
-            File target = new File(cacheDir + "/cache");
-            target.delete();
-            target.mkdirs();
-            unzip(new File(cacheDir + "cache.zip"), target);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (dexInternalStoragePath.exists())
-            dexInternalStoragePath.delete();
-        try {
-            BufferedInputStream bis = new BufferedInputStream(getResources().openRawResource(R.raw.rsc_single));
-            OutputStream dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
-            byte[] buf = new byte[1024];
-            int len;
-            while((len = bis.read(buf, 0, 1024)) > 0)
-                dexWriter.write(buf, 0, len);
-            dexWriter.close();
-            bis.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        String dexPath = compileJAR(dexInternalStoragePath.getAbsolutePath());
-
-        try {
-            dexLoader = new DexClassLoader(dexPath, "", null, getClassLoader());
-
-            Class<?> client = dexLoader.loadClass("org.nemotech.rsc.Main");
-            Method meth = client.getMethod("main", String[].class);
-            meth.invoke(null, (Object)new String[0]);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }*/
-    }
-
-    public void runRSCPlus() {
-        /*File dexInternalStoragePath = new File(cacheDir + "rscplus.jar");
-        //File dexInternalStoragePath = new File(getDir("dex", Context.MODE_PRIVATE), "latest.dex");
-        if (dexInternalStoragePath.exists())
-            dexInternalStoragePath.delete();
-        try {
-            BufferedInputStream bis = new BufferedInputStream(getResources().openRawResource(R.raw.rscplus));
-            OutputStream dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
-            byte[] buf = new byte[1024];
-            int len;
-            while((len = bis.read(buf, 0, 1024)) > 0)
-                dexWriter.write(buf, 0, len);
-            dexWriter.close();
-            bis.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        String dexPath = compileJAR(dexInternalStoragePath.getAbsolutePath());
-
-        try {
-            dexLoader = new DexClassLoader(dexPath, "", null, getClassLoader());
-
-            Class<?> client = dexLoader.loadClass("Client.Launcher");
-            Method meth = client.getMethod("main", String[].class);
-            meth.invoke(null, (Object)new String[0]);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }*/
-    }
-
-    public void runOSRS() {
-        /*copyFile(R.raw.jagex_cl_oldschool, new File(cacheDir + "jagex_cl_oldschool_LIVE.dat"));
-        copyFile(R.raw.update, new File(cacheDir + "assets/update.bin"));
-        copyFile(R.raw.worldlist, new File(cacheDir + "assets/worldlist.ws"));
-        copyFile(R.raw.main_file_cache_dat2, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.dat2"));
-        copyFile(R.raw.main_file_cache_0, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx0"));
-        copyFile(R.raw.main_file_cache_1, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx1"));
-        copyFile(R.raw.main_file_cache_2, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx2"));
-        copyFile(R.raw.main_file_cache_3, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx3"));
-        copyFile(R.raw.main_file_cache_4, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx4"));
-        copyFile(R.raw.main_file_cache_5, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx5"));
-        copyFile(R.raw.main_file_cache_6, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx6"));
-        copyFile(R.raw.main_file_cache_7, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx7"));
-        copyFile(R.raw.main_file_cache_8, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx8"));
-        copyFile(R.raw.main_file_cache_9, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx9"));
-        copyFile(R.raw.main_file_cache_10, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx10"));
-        copyFile(R.raw.main_file_cache_11, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx11"));
-        copyFile(R.raw.main_file_cache_12, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx12"));
-        copyFile(R.raw.main_file_cache_13, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx13"));
-        copyFile(R.raw.main_file_cache_14, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx14"));
-        copyFile(R.raw.main_file_cache_15, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx15"));
-        copyFile(R.raw.main_file_cache_16, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx16"));
-        copyFile(R.raw.main_file_cache_17, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx17"));
-        copyFile(R.raw.main_file_cache_18, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx18"));
-        copyFile(R.raw.main_file_cache_19, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx19"));
-        copyFile(R.raw.main_file_cache_20, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx20"));
-        copyFile(R.raw.main_file_cache_255, new File(cacheDir + "jagexcache/oldschool/LIVE/main_file_cache.idx255"));
-
-        File dexInternalStoragePath = new File(cacheDir + "gamepack.jar");
-        //File dexInternalStoragePath = new File(getDir("dex", Context.MODE_PRIVATE), "latest.dex");
-        if (dexInternalStoragePath.exists())
-            dexInternalStoragePath.delete();
-        try {
-            BufferedInputStream bis = new BufferedInputStream(getResources().openRawResource(R.raw.gamepack_8273127));
-            OutputStream dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
-            byte[] buf = new byte[1024];
-            int len;
-            while((len = bis.read(buf, 0, 1024)) > 0)
-                dexWriter.write(buf, 0, len);
-            dexWriter.close();
-            bis.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        String dexPath = compileJAR(dexInternalStoragePath.getAbsolutePath());
-        //String dexPath = dexInternalStoragePath.getAbsolutePath();
-
-        try {
-            HashMap<String, String> parameters = new HashMap<String, String>();
-            parameters.put("1", "1");
-            parameters.put("2", "https://payments.jagex.com/");
-            parameters.put("3", "true");
-            parameters.put("4", "26009");
-            parameters.put("5", "0");
-            parameters.put("6", "0");
-            parameters.put("7", "0");
-            parameters.put("8", "true");
-            parameters.put("9", "ElZAIrq5NpKN6D3mDdihco3oPeYN2KFy2DCquj7JMmECPmLrDP3Bnw");
-            parameters.put("10", "5");
-            parameters.put("11", "https://auth.jagex.com");
-            parameters.put("12", "301"); // World
-            parameters.put("13", ".runescape.com");
-            parameters.put("14", "0");
-            parameters.put("15", "0");
-            parameters.put("16", "false");
-            parameters.put("17", "http://www.runescape.com/g=oldscape/slr.ws?order=LPWM");
-            parameters.put("18", "");
-            parameters.put("19", "196515767263-1oo20deqm6edn7ujlihl6rpadk9drhva.apps.googleusercontent.com");
-            parameters.put("20", "https://token-auth.production.jxp.aws.jagex.com/");
-
-            dexLoader = new DexClassLoader(dexPath, "", null, getClassLoader());
-            Class<?> client = dexLoader.loadClass("client");
-            applet = (Applet)client.newInstance();
-            applet.setParameters(parameters);
-            applet.setCodeBase("http://oldschool1.runescape.com/");
-            applet.setSize(765, 503);
-            //applet.setSize(MainCanvas.instance.getWidth(), MainCanvas.instance.getHeight());
-            applet.init();
-            applet.start();
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }*/
-    }
-
-    public void runRSC() {
-        /*copyFile(R.raw.config85, new File(cacheDir + "config85.jag"));
-        copyFile(R.raw.entity24, new File(cacheDir + "entity24.jag"));
-        copyFile(R.raw.entity24mem, new File(cacheDir + "entity24.mem"));
-        copyFile(R.raw.filter2, new File(cacheDir + "filter2.jag"));
-        copyFile(R.raw.jagex, new File(cacheDir + "jagex.jag"));
-        copyFile(R.raw.land63, new File(cacheDir + "land63.jag"));
-        copyFile(R.raw.land63mem, new File(cacheDir + "land63.mem"));
-        copyFile(R.raw.maps63, new File(cacheDir + "maps63.jag"));
-        copyFile(R.raw.maps63mem, new File(cacheDir + "maps63.mem"));
-        copyFile(R.raw.media58, new File(cacheDir + "media58.jag"));
-        copyFile(R.raw.models36, new File(cacheDir + "models36.jag"));
-        copyFile(R.raw.sounds1, new File(cacheDir + "sounds1.mem"));
-        copyFile(R.raw.textures17, new File(cacheDir + "textures17.jag"));
-
-        File dexInternalStoragePath = new File(getDir("dex", Context.MODE_PRIVATE), "mudclient177_deob.dex");
-        try {
-            BufferedInputStream bis = new BufferedInputStream(getResources().openRawResource(R.raw.gamepack_8273127));
-            OutputStream dexWriter = new BufferedOutputStream(new FileOutputStream(dexInternalStoragePath));
-            byte[] buf = new byte[1024];
-            int len;
-            while((len = bis.read(buf, 0, 1024)) > 0)
-                dexWriter.write(buf, 0, len);
-            dexWriter.close();
-            bis.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            HashMap<String, String> parameters = new HashMap<String, String>();
-            parameters.put("member", "1");
-            parameters.put("poff", "0");
-            parameters.put("port", "43596");
-            parameters.put("ip", "game.openrsc.com");
-            parameters.put("exponent", "65537");
-            parameters.put("modulus", "7112866275597968156550007489163685737528267584779959617759901583041864787078477876689003422509099353805015177703670715380710894892460637136582066351659813");
-            parameters.put("disableOpcodeEncryption", "true");
-            parameters.put("referid", "0");
-            parameters.put("limit30", "0");
-
-            PathClassLoader loader = new PathClassLoader(dexInternalStoragePath.getAbsolutePath(), getClassLoader());
-            Class<?> client = loader.loadClass("mudclient");
-            applet = (Applet)client.newInstance();
-            applet.setParameters(parameters);
-            applet.setSize(512, 346);
-            applet.init();
-            applet.start();
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }*/
     }
 
     public void initDalvikJVM() {
