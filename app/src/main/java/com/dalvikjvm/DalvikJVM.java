@@ -245,22 +245,6 @@ public class DalvikJVM extends AppCompatActivity {
         fileOrDirectory.delete();
     }
 
-    public String hashFile(File file) {
-        byte[] buffer = new byte[8192];
-        int count;
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-            while ((count = bis.read(buffer)) > 0)
-                digest.update(buffer, 0, count);
-            bis.close();
-            byte[] hash = digest.digest();
-            return new BigInteger(1, hash).toString(16);
-        } catch (Exception e) {}
-
-        return null;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -332,11 +316,10 @@ public class DalvikJVM extends AppCompatActivity {
         }
 
         File outputClassStaging = new File(targetDirectory.getAbsolutePath() + "/" + name);
-        String args[] = { inputFile.getAbsolutePath(), outputClassStaging.getAbsolutePath() };
-        Dexecrator.main(args);
+        Dexecrator.patch(inputFile.getAbsolutePath(), outputClassStaging.getAbsolutePath());
 
         // Clean up unpatched class
-        String inputHash = hashFile(inputFile);
+        String inputHash = Dexecrator.getLastPatchHash();
         inputFile.delete();
 
         File outputFile = new File(getDir("dex", Context.MODE_PRIVATE), inputHash + ".dex");
@@ -385,10 +368,9 @@ public class DalvikJVM extends AppCompatActivity {
 
         MainCanvas.setStatusText("Launching " + input);
         File outputJARStaging = new File(targetDirectory.getAbsolutePath() + "/__staging.jar");
-        String args[] = { inputFile.getAbsolutePath(), outputJARStaging.getAbsolutePath() };
-        Dexecrator.main(args);
+        Dexecrator.patch(inputFile.getAbsolutePath(), outputJARStaging.getAbsolutePath());
 
-        String inputHash = hashFile(inputFile);
+        String inputHash = Dexecrator.getLastPatchHash();
         File outputFile = new File(getDir("dex", Context.MODE_PRIVATE), inputHash + ".zip");
 
         if (!outputFile.exists()) {
