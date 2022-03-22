@@ -46,9 +46,7 @@ import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.URL;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -492,16 +490,19 @@ public class DalvikJVM extends AppCompatActivity {
             dexLoader = new DexClassLoader(dexPath, "", null, getClassLoader());
 
             // Load manifest information
-            try {
-                URL url = dexLoader.getResource("META-INF/MANIFEST.MF");
-                java.util.jar.Manifest manifest = new java.util.jar.Manifest(url.openStream());
-                Attributes attributes = manifest.getMainAttributes();
+            Enumeration<URL> resources = dexLoader.getResources("META-INF/MANIFEST.MF");
+            while (resources.hasMoreElements()) {
+                try {
+                    java.util.jar.Manifest manifest = new java.util.jar.Manifest(resources.nextElement().openStream());
+                    Attributes attributes = manifest.getMainAttributes();
 
-                String mainClass = attributes.getValue("Main-Class");
-                if (config.classMain == null && mainClass != null)
-                    config.classMain = mainClass;
-            } catch (Exception e) {
-                // Contains no manifest probably
+                    // Load attributes
+                    String mainClass = attributes.getValue(Attributes.Name.MAIN_CLASS);
+
+                    // Set main class
+                    if (config.classMain == null && mainClass != null)
+                        config.classMain = mainClass;
+                } catch (IOException e) {}
             }
 
             Class<?> client = dexLoader.loadClass(config.classMain);
