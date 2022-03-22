@@ -44,10 +44,12 @@ import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.jar.Attributes;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -284,7 +286,6 @@ public class DalvikJVM extends AppCompatActivity {
                 config.emulatedJREVersion = JVMConfig.EmulatedJREVersion.ORACLE_8;
                 config.classPath = JFileChooser.getPath(this, uri);
                 config.applet = false;
-                config.classMain = "Client/Launcher";
                 /*config.classMain = "fleas";
                 config.applet = true;
                 config.appletCodeBase = "https://logg.biz/runescape/2005-08/jagex.com/fleacircus/";
@@ -391,12 +392,16 @@ public class DalvikJVM extends AppCompatActivity {
 
         String inputHash = hashFile(inputFile);
         File outputFile = new File(getDir("dex", Context.MODE_PRIVATE), inputHash + ".zip");
+
+        // If you uncomment this, it invalidates the cache every time
         outputFile.delete();
 
         if (!outputFile.exists()) {
             try {
                 unzip(outputJARStaging, targetDirectory);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             File dexFile = new File(targetDirectory.getAbsolutePath() + "/classes.dex");
             File outputFileStaging = new File(targetDirectory.getAbsolutePath() + "/__staging.zip");
@@ -483,8 +488,22 @@ public class DalvikJVM extends AppCompatActivity {
         String dexPath = compileJAR(dexInternalStoragePath.getAbsolutePath());
 
         try {
-            // Load main class
+            // Load our compiled dexes
             dexLoader = new DexClassLoader(dexPath, "", null, getClassLoader());
+
+            // Load manifest information
+            try {
+                URL url = dexLoader.getResource("META-INF/MANIFEST.MF");
+                java.util.jar.Manifest manifest = new java.util.jar.Manifest(url.openStream());
+                Attributes attributes = manifest.getMainAttributes();
+
+                String mainClass = attributes.getValue("Main-Class");
+                if (config.classMain == null && mainClass != null)
+                    config.classMain = mainClass;
+            } catch (Exception e) {
+                // Contains no manifest probably
+            }
+
             Class<?> client = dexLoader.loadClass(config.classMain);
 
             if (config.applet) {
