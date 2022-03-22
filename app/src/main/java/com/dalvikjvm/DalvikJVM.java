@@ -498,8 +498,9 @@ public class DalvikJVM extends AppCompatActivity {
                 setTarget(applet);
             } else {
                 // Running desktop configuration
+                String[] args = config.desktopParameters.values().toArray(new String[0]);
                 Method meth = client.getMethod("main", String[].class);
-                meth.invoke(null, (Object)config.desktopArgs);
+                meth.invoke(null, (Object)args);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -529,7 +530,7 @@ public class DalvikJVM extends AppCompatActivity {
 
         // Request needed permissions
         if (permissionRequest.size() > 0) {
-            String[] permissions = permissionRequest.toArray(new String[permissionRequest.size()]);
+            String[] permissions = permissionRequest.toArray(new String[0]);
             ActivityCompat.requestPermissions(DalvikJVM.this, permissions, _PERMISSION_SELECT_CODE);
         }
 

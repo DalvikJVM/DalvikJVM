@@ -39,7 +39,7 @@ public class JVMConfig {
 
     public JVMConfig()
     {
-        desktopArgs = new String[0];
+        desktopParameters = new HashMap<String, String>();
         appletParameters = new HashMap<String, String>();
     }
 
@@ -57,8 +57,8 @@ public class JVMConfig {
     // Applet Parameters
     public String appletCodeBase;
     public Dimension appletSize;
-    HashMap<String, String> appletParameters;
+    public HashMap<String, String> appletParameters;
 
     // Desktop Parameters
-    public String[] desktopArgs;
+    public HashMap<String, String> desktopParameters;
 }
