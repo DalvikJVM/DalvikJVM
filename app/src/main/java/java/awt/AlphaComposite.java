@@ -22,8 +22,24 @@ package java.awt;
 public class AlphaComposite {
     public static AlphaComposite SrcOver = new AlphaComposite();
 
+    float alpha;
+
+    public AlphaComposite()
+    {
+        alpha = 1.0f;
+    }
+
+    public AlphaComposite(AlphaComposite other, float alpha)
+    {
+        this.alpha = alpha;
+    }
+
     public AlphaComposite derive(float alpha) {
-        System.out.println("Unimplemented method AlphaComposite.derive(" + alpha + ") called");
-        return this;
+        return new AlphaComposite(this, alpha);
+    }
+
+    public float getAlpha()
+    {
+        return alpha;
     }
 }

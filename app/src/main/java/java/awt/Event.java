@@ -63,7 +63,7 @@ public class Event {
 
 
         key = -1;
-        _keyChar = '\n';
+        _keyChar = '\0';
         _awtKey = -1;
         _awtModifier = 0;
     }

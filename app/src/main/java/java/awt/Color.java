@@ -37,6 +37,13 @@ public class Color {
     private int b;
     private int a;
 
+    public Color(int rgb) {
+        this.r = (rgb >> 16) & 0xFF;
+        this.g = (rgb >> 8) & 0xFF;
+        this.b = rgb & 0xFF;
+        this.a = 0xFF;
+    }
+
     public Color(int r, int g, int b, int a) {
         this.r = r;
         this.g = g;
@@ -67,12 +74,29 @@ public class Color {
     }
 
     public Color darker() {
-        System.out.println("Unimplemented method Color.darker() called");
-        return this;
+        return new Color((int)(r * 0.7f), (int)(g * 0.7f), (int)(b * 0.7f), 0xFF);
     }
 
     public Color brighter() {
-        System.out.println("Unimplemented method Color.brighter() called");
-        return this;
+        int hues[] = new int[3];
+        hues[0] = r;
+        hues[1] = g;
+        hues[2] = b;
+
+        if (r == 0 && g == 0 && b == 0) {
+            hues[0] = 3;
+            hues[1] = 3;
+            hues[2] = 3;
+        } else {
+            for (int i = 0; i < 3; i++)
+            {
+                if (hues[i] > 2)
+                    hues[i] = (int)Math.min(255.0f, hues[i] / 0.7f);
+                if (hues[i] == 1 || hues[i] == 2)
+                    hues[i] = 4;
+            }
+        }
+
+        return new Color(hues[0], hues[1], hues[2], 0xFF);
     }
 }

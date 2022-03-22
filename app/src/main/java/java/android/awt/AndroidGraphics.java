@@ -32,6 +32,7 @@ public class AndroidGraphics extends Graphics2D {
     protected Bitmap backbuffer;
     protected Canvas canvas;
     protected Paint paint;
+    protected AlphaComposite alphaComposite = AlphaComposite.SrcOver;
 
     public AndroidGraphics(Component parent) {
         this(parent.getWidth(), parent.getHeight());
@@ -99,6 +100,7 @@ public class AndroidGraphics extends Graphics2D {
             return;
 
         paint.setColor(currentColor.getRGB());
+        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
     }
 
     @Override
@@ -177,5 +179,14 @@ public class AndroidGraphics extends Graphics2D {
         Rect dst = new Rect(destX, destY, destX + width, destY + height);
 
         canvas.drawBitmap(croppedBitmap, src, dst, paint);
+    }
+
+    @Override
+    public void setComposite(Composite composite) {
+        if (composite instanceof AlphaComposite) {
+            alphaComposite = (AlphaComposite)composite;
+        } else {
+            alphaComposite = AlphaComposite.SrcOver;
+        }
     }
 }

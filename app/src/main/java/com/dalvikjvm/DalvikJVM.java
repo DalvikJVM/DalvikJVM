@@ -619,9 +619,11 @@ public class DalvikJVM extends AppCompatActivity {
         switch(keycode) {
             case KeyEvent.KEYCODE_DEL:
                 evt.key = 8;
+                evt._keyChar = '\b';
                 break;
             case KeyEvent.KEYCODE_ENTER:
                 evt.key = 10;
+                evt._keyChar = '\n';
                 break;
             case KeyEvent.KEYCODE_ESCAPE:
                 evt.key = 27;
