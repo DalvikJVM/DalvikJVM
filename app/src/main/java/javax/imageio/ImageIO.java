@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,6 +33,11 @@ import java.net.URL;
 public class ImageIO {
     public static void setUseCache(boolean enable) {
         System.out.println("Unimplemented method ImageIO.setUseCache(" + enable + ") called");
+    }
+
+    public static boolean write(RenderedImage im, String formatName, File output) {
+        System.out.println("Unimplemented method ImageIO.write(" + im + ", " + formatName + ", " + output + ") called");
+        return true;
     }
 
     public static BufferedImage read(URL url) throws IOException {

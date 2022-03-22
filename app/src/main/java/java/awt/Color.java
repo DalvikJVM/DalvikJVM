@@ -74,7 +74,7 @@ public class Color {
     }
 
     public Color darker() {
-        return new Color((int)(r * 0.7f), (int)(g * 0.7f), (int)(b * 0.7f), 0xFF);
+        return new Color((int)(r * 0.7f), (int)(g * 0.7f), (int)(b * 0.7f));
     }
 
     public Color brighter() {
@@ -97,6 +97,6 @@ public class Color {
             }
         }
 
-        return new Color(hues[0], hues[1], hues[2], 0xFF);
+        return new Color(hues[0], hues[1], hues[2]);
     }
 }

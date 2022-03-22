@@ -26,7 +26,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.Hashtable;
 
-public class BufferedImage extends Image implements ImageConsumer {
+public class BufferedImage extends Image implements ImageConsumer, RenderedImage {
     AndroidGraphics graphics;
     WritableRaster raster;
 

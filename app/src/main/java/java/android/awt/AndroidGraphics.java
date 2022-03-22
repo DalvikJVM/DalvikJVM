@@ -100,7 +100,6 @@ public class AndroidGraphics extends Graphics2D {
             return;
 
         paint.setColor(currentColor.getRGB());
-        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
     }
 
     @Override
@@ -109,6 +108,7 @@ public class AndroidGraphics extends Graphics2D {
         y += translatePoint.y;
 
         paint.setStyle(Paint.Style.FILL);
+        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
         canvas.drawRect(new Rect(x, y, x + width, y + height), paint);
     }
 
@@ -118,6 +118,7 @@ public class AndroidGraphics extends Graphics2D {
         y += translatePoint.y;
 
         paint.setStyle(Paint.Style.STROKE);
+        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
         canvas.drawRect(new Rect(x, y, x + width, y + height), paint);
     }
 
@@ -128,6 +129,7 @@ public class AndroidGraphics extends Graphics2D {
         System.out.println("DRAW_STRING: " + str + ": " + x + ", " + y + ", " + currentFont._getTypeface() + ", " + currentFont.getSize() + ", " + currentColor.getRGB());
         paint.setTypeface(currentFont._getTypeface());
         paint.setTextSize(currentFont.getSize());
+        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
         canvas.drawText(str, x, y, paint);
     }
 
@@ -150,6 +152,7 @@ public class AndroidGraphics extends Graphics2D {
         Rect imageRect = new Rect(0, 0, img.getWidth(), img.getHeight());
         Rect destRect = new Rect(x, y, x + w, y + h);
         image._updateBitmap();
+        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
         canvas.drawBitmap(image._getBitmap(),   imageRect,
                                                 destRect, paint);
 
