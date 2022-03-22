@@ -53,6 +53,18 @@ public class AndroidFontMetrics extends FontMetrics {
     }
 
     @Override
+    public int getMaxAscent() {
+        // TODO: Check, this prob isn't right
+        return maxSize;
+    }
+
+    @Override
+    public int getMaxDescent() {
+        // TODO: Check, this prob isn't right
+        return maxSize;
+    }
+
+    @Override
     public int getHeight() {
         return maxSize;
     }

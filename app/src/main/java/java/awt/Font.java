@@ -30,6 +30,7 @@ import java.io.InputStream;
 public class Font {
     AndroidFontMetrics fontMetrics;
     Typeface typeface;
+    String name;
     int size;
     int style;
 
@@ -56,6 +57,7 @@ public class Font {
         else if (italic)
             typefaceMask = Typeface.ITALIC;
 
+        this.name = name;
         this.size = size;
         this.style = style;
         typeface = Typeface.create(name, typefaceMask);
@@ -80,9 +82,7 @@ public class Font {
     }
 
     public Font deriveFont(int style, float size) {
-        // TODO: Actually derive font
-        System.out.println("Unimplemented method Font.deriveFont(" + style + ", " + size + ") called");
-        return this;
+        return new Font(name, style, (int)size);
     }
 
     public Font deriveFont(float size) {
