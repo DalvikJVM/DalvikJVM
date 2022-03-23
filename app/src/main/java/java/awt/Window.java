@@ -30,6 +30,10 @@ public abstract class Window extends Container {
         UTILITY,
     }
 
+    public boolean isActive() {
+        return (DalvikJVM.renderTarget == this);
+    }
+
     @Override
     public void setVisible(boolean show) {
         super.setVisible(show);

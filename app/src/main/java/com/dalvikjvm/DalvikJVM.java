@@ -41,6 +41,7 @@ import javax.swing.*;
 import java.android.awt.AndroidGraphicsDevice;
 import java.applet.Applet;
 import java.awt.*;
+import java.awt.event.AWTEventListener;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
@@ -79,6 +80,7 @@ public class DalvikJVM extends AppCompatActivity {
     public DexClassLoader dexLoader;
 
     public static Component renderTarget = null;
+    private static List<AWTEventListener> eventQueueListener = new ArrayList<AWTEventListener>();
 
     // Intent codes
     public static final int _FILE_SELECT_CODE = 0;
@@ -89,6 +91,10 @@ public class DalvikJVM extends AppCompatActivity {
         super();
         instance = this;
         virtualShift = false;
+    }
+
+    public static void addAWTEventListener(AWTEventListener listener) {
+        eventQueueListener.add(listener);
     }
 
     private static void zipEntry(String parentDir, File inputFolderPath, ZipOutputStream zos) throws IOException {
@@ -433,6 +439,11 @@ public class DalvikJVM extends AppCompatActivity {
         synchronized (eventQueueLock) {
             eventQueue.add(e);
         }
+    }
+
+    public static void processAWTEvent(AWTEvent evt) {
+        for (AWTEventListener listener : eventQueueListener)
+            listener.eventDispatched(evt);
     }
 
     public void processEventQueue() {

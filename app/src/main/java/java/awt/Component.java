@@ -22,6 +22,7 @@ package java.awt;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import com.dalvikjvm.DalvikJVM;
 
 import javax.imageio.ImageIO;
 import java.android.awt.AndroidComponentPeer;
@@ -162,29 +163,23 @@ public abstract class Component implements ImageObserver {
                 focusEvent = new FocusEvent((Component)event.arg, FocusEvent.FOCUS_LOST);
                 break;
             case Event.KEY_PRESS:
-                keyDown(event, event.key);
                 keyEvent = new KeyEvent(this, KeyEvent.KEY_PRESSED, event.when, event._awtModifier,
                                             event._awtKey==-1?event.key:event._awtKey, event._keyChar);
                 break;
             case Event.KEY_RELEASE:
-                keyUp(event, event.key);
                 keyEvent = new KeyEvent(this, KeyEvent.KEY_RELEASED, event.when, event._awtModifier,
                                             event._awtKey==-1?event.key:event._awtKey, event._keyChar);
                 break;
             case Event.MOUSE_DOWN:
-                mouseDown(event, event.x, event.y);
                 mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_PRESSED, event.when, event._awtModifier, event.x, event.y, 1, false, mouseButton);
                 break;
             case Event.MOUSE_UP:
-                mouseUp(event, event.x, event.y);
                 mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_RELEASED, event.when, event._awtModifier, event.x, event.y, 1, false, mouseButton);
                 break;
             case Event.MOUSE_MOVE:
-                mouseMove(event, event.x, event.y);
                 mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_MOVED, event.when, event._awtModifier, event.x, event.y, 1, false, 0);
                 break;
             case Event.MOUSE_DRAG:
-                mouseDrag(event, event.x, event.y);
                 mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_DRAGGED, event.when, event._awtModifier, event.x, event.y, 1, false, mouseButton);
                 break;
             case Event.MOUSE_ENTER:
@@ -210,15 +205,39 @@ public abstract class Component implements ImageObserver {
                 if (event.id == Event.MOUSE_EXIT)
                     _handleMouseEvent(this, mouseEvent);
             }
+            DalvikJVM.processAWTEvent(mouseEvent);
         }
         if (mouseWheelEvent != null) {
             if (_withinBounds(event.x, event.y))
                 _handleMouseWheelEvent(this, mouseWheelEvent);
+            DalvikJVM.processAWTEvent(mouseWheelEvent);
         }
-        if (keyEvent != null)
+        if (keyEvent != null) {
             _handleKeyboardEvent(this, keyEvent);
-        if (focusEvent != null)
+            DalvikJVM.processAWTEvent(keyEvent);
+        }
+        if (focusEvent != null) {
             _handleFocusEvent(this, focusEvent);
+            DalvikJVM.processAWTEvent(focusEvent);
+        }
+
+        // AWT 1.0 event handler
+        _handleEvent(this, event);
+    }
+
+    private boolean _handleEvent(Component component, Event event)
+    {
+        if (component.handleEvent(event))
+            return true;
+
+        synchronized (childLock) {
+            for (Component child : component.children) {
+                if (_handleEvent(child, event))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean _withinBounds(int x, int y) {
@@ -264,6 +283,36 @@ public abstract class Component implements ImageObserver {
             for (Component child : component.children)
                 _handleKeyboardEvent(child, event);
         }
+    }
+
+    public boolean handleEvent(Event event) {
+        switch (event.id) {
+            case Event.KEY_PRESS:
+                return keyDown(event, event.key);
+            case Event.KEY_RELEASE:
+                return keyUp(event, event.key);
+            case Event.MOUSE_DOWN:
+                return mouseDown(event, event.x, event.y);
+            case Event.MOUSE_UP:
+                return mouseUp(event, event.x, event.y);
+            case Event.MOUSE_MOVE:
+                return mouseMove(event, event.x, event.y);
+            case Event.MOUSE_DRAG:
+                return mouseDrag(event, event.x, event.y);
+            case Event.MOUSE_ENTER:
+                //return mouseEnter(event, event.x, event.y);
+                break;
+            case Event.MOUSE_EXIT:
+                //return mouseExit(event, event.x, event.y);
+                break;
+            case Event.GOT_FOCUS:
+                //return gotFocus(event, event.arg);
+                break;
+            case Event.LOST_FOCUS:
+                //return lostFocus(event, event.arg);
+                break;
+        }
+        return false;
     }
 
     public void _handleMouseEvent(Component component, MouseEvent event) {

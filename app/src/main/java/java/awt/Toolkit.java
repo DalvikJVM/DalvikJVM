@@ -19,6 +19,8 @@
 
 package java.awt;
 
+import com.dalvikjvm.DalvikJVM;
+
 import java.android.awt.AndroidToolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.event.AWTEventListener;
@@ -28,7 +30,7 @@ public abstract class Toolkit {
     private EventQueue eventQueue = new EventQueue();
 
     public void addAWTEventListener(AWTEventListener listener, long eventMask) {
-        System.out.println("Unimplemented method Toolkit.addAWTEventListener(" + listener + ", " + eventMask + ") called");
+        DalvikJVM.addAWTEventListener(listener);
     }
 
     public Clipboard getSystemClipboard() {
