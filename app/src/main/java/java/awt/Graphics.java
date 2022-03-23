@@ -88,6 +88,10 @@ public abstract class Graphics {
         System.out.println("Unimplemented method Graphics.fillOval(" + x + ", " + y + ", " + width + ", " + height + ") called");
     }
 
+    public void drawOval(int x, int y, int width, int height) {
+        System.out.println("Unimplemented method Graphics.drawOval(" + x + ", " + y + ", " + width + ", " + height + ") called");
+    }
+
     public void fillRect(int x, int y, int width, int height) {
         System.out.println("Unimplemented method Graphics.fillRect(" + x + ", " + y + ", " + width + ", " + height + ") called");
     }

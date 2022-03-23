@@ -19,12 +19,11 @@
 
 package java.android.awt;
 
-import android.graphics.Bitmap;
+import android.graphics.*;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Rect;
 
 import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
@@ -110,6 +109,26 @@ public class AndroidGraphics extends Graphics2D {
         paint.setStyle(Paint.Style.FILL);
         paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
         canvas.drawRect(new Rect(x, y, x + width, y + height), paint);
+    }
+
+    @Override
+    public void fillOval(int x, int y, int width, int height) {
+        x += translatePoint.x;
+        y += translatePoint.y;
+
+        paint.setStyle(Paint.Style.FILL);
+        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
+        canvas.drawOval(new RectF(x, y, x + width, y + height), paint);
+    }
+
+    @Override
+    public void drawOval(int x, int y, int width, int height) {
+        x += translatePoint.x;
+        y += translatePoint.y;
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
+        canvas.drawOval(new RectF(x, y, x + width, y + height), paint);
     }
 
     @Override
