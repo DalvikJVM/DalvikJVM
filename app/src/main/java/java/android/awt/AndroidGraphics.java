@@ -142,6 +142,16 @@ public class AndroidGraphics extends Graphics2D {
     }
 
     @Override
+    public void drawLine(int x, int y, int x2, int y2) {
+        x += translatePoint.x;
+        y += translatePoint.y;
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
+        canvas.drawLine(x, y, x2, y2, paint);
+    }
+
+    @Override
     public void drawString(String str, int x, int y) {
         x += translatePoint.x;
         y += translatePoint.y;

@@ -114,8 +114,8 @@ public abstract class Graphics {
         System.out.println("Unimplemented method Graphics.fillPolygon(" + xPoints + ", " + yPoints + ", " + nPoints + ") called");
     }
 
-    public void drawLine(int x1, int y1, int x2, int y2) {
-        System.out.println("Unimplemented method Graphics.drawLine(" + x1 + ", " + y1 + ", " + x2 + ", " + y2 + ") called");
+    public void drawLine(int x, int y, int x2, int y2) {
+        System.out.println("Unimplemented method Graphics.drawLine(" + x + ", " + y + ", " + x2 + ", " + y2 + ") called");
     }
 
     public void drawString(String str, int x, int y) {
