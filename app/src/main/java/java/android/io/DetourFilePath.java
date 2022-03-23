@@ -19,7 +19,6 @@
 
 package java.android.io;
 
-import android.os.Environment;
 import com.dalvikjvm.DalvikJVM;
 
 import java.io.File;
@@ -29,7 +28,7 @@ public class DetourFilePath {
         System.out.println("Path: " + str);
 
         // Check if string is already converted
-        if (str.startsWith(DalvikJVM.cacheDir) || str.startsWith(DalvikJVM.config.workingDirectory)) {
+        if (str.startsWith(DalvikJVM.homeDir) || str.startsWith(DalvikJVM.config.workingDirectory)) {
             System.out.println("Accessing path '" + str + "'");
             return str;
         }

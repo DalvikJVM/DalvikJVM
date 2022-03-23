@@ -24,6 +24,13 @@ import java.awt.*;
 public class JFrame extends Frame {
     Container contentPane = null;
 
+    public JFrame() {
+    }
+
+    public JFrame(String title) {
+        setTitle(title);
+    }
+
     public Container getContentPane() {
         if (contentPane == null) {
             contentPane = new JPanel();

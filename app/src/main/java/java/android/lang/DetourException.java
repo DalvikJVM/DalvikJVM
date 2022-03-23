@@ -17,28 +17,11 @@
  *	Authors: see <https://github.com/DalvikJVM/DalvikJVM>
  */
 
-package javax.sound.sampled;
+package java.android.lang;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-public class AudioInputStream extends InputStream {
-    AudioFormat audioFormat;
-    InputStream stream;
-
-    public AudioInputStream(InputStream stream) {
-        this.stream = stream;
-        this.audioFormat = new AudioFormat(null, 44100, 16, 2, 0, 0, true);
-        System.out.println("Unimplemented method AudioInputStream.<init>(" + stream + ") called");
-    }
-
-    @Override
-    public int read() throws IOException {
-        System.out.println("Unimplemented method AudioInputStream.read() called");
-        return stream.read();
-    }
-
-    public AudioFormat getFormat() {
-        return audioFormat;
+public class DetourException {
+    public static Throwable HandleException(Throwable throwable) {
+        //throwable.printStackTrace();
+        return throwable;
     }
 }

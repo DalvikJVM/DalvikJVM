@@ -20,11 +20,19 @@
 package javax.sound.sampled;
 
 public class AudioFormat {
+    public static class Encoding {
+        public static Encoding ULAW = new Encoding("ULAW");
+        public static Encoding PCM_SIGNED = new Encoding("PCM_SIGNED");
+
+        public Encoding(String name) {
+        }
+    }
+
     protected float sampleRate;
     protected int channels;
     protected int sampleSize;
 
-    public AudioFormat(float sampleRate, int sampleSizeInBits, int channels, boolean signed, boolean bigEndian) {
+    public AudioFormat(Encoding encoding, float sampleRate, int sampleSizeInBits, int channels, int frameSize, float frameRate, boolean bigEndian) {
         this.sampleRate = sampleRate;
         this.channels = channels;
         this.sampleSize = sampleSizeInBits;

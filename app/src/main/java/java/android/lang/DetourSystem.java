@@ -42,7 +42,7 @@ public class DetourSystem {
     public static String getProperty(String key) {
         String ret = System.getProperty(key);
         if (key.equals("user.home"))
-            ret = DalvikJVM.cacheDir;
+            ret = DalvikJVM.homeDir;
         if (key.equals("java.vendor"))
             ret = DalvikJVM.config.getJREVersionInfo().vendor;
         if (key.equals("java.version"))

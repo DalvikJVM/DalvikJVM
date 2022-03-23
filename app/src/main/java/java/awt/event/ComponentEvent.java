@@ -25,4 +25,8 @@ public class ComponentEvent extends AWTEvent {
     public ComponentEvent(Object source, int id) {
         super(source, id);
     }
+
+    public Component getComponent() {
+        return (Component)source;
+    }
 }

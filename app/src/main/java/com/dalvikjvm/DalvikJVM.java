@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
@@ -56,6 +57,7 @@ public class DalvikJVM extends AppCompatActivity {
     public static InputMethodManager inputMethodManager;
     public static DalvikJVM instance;
     public static String cacheDir;
+    public static String homeDir;
     public static JVMConfig config;
     private boolean shiftPressed;
     private boolean altShiftPressed;
@@ -512,6 +514,13 @@ public class DalvikJVM extends AppCompatActivity {
     }
 
     public void initDalvikJVM() {
+        cacheDir = new File(getFilesDir().getAbsolutePath() + File.separator).getAbsolutePath() + "/";
+        homeDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/DalvikJVM";
+
+        File fileHomeDir = new File(homeDir);
+        if (!fileHomeDir.exists())
+            fileHomeDir.mkdirs();
+
         AndroidGraphicsDevice.setupDisplayMode(MainCanvas.instance.getWidth(), MainCanvas.instance.getHeight());
     }
 
@@ -539,7 +548,6 @@ public class DalvikJVM extends AppCompatActivity {
         }
 
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        cacheDir = new File(getFilesDir().getAbsolutePath() + File.separator).getAbsolutePath() + "/";
 
         // Initialize JVM
         initDalvikJVM();
