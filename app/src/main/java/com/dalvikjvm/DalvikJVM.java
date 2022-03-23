@@ -44,10 +44,7 @@ import java.awt.*;
 import java.awt.event.AWTEventListener;
 import java.io.*;
 import java.lang.reflect.Method;
-import java.math.BigInteger;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.security.MessageDigest;
 import java.util.*;
 import java.util.jar.Attributes;
 import java.util.zip.ZipEntry;
@@ -433,9 +430,6 @@ public class DalvikJVM extends AppCompatActivity {
     }
 
     public void addEventQueue(Event e) {
-        if (e._awtKey == -1 && e.key == -1 && e._awtModifier == -1)
-            return;
-
         synchronized (eventQueueLock) {
             eventQueue.add(e);
         }
@@ -620,11 +614,11 @@ public class DalvikJVM extends AppCompatActivity {
         Event evt = new Event(getTarget(), id, null);
 
         if (shift)
-            evt._awtModifier |= java.awt.event.InputEvent.SHIFT_MASK;
+            evt.modifiers |= java.awt.event.InputEvent.SHIFT_MASK;
         if (ctrl)
-            evt._awtModifier |= java.awt.event.InputEvent.CTRL_MASK;
+            evt.modifiers |= java.awt.event.InputEvent.CTRL_MASK;
         if (alt)
-            evt._awtModifier |= java.awt.event.InputEvent.ALT_MASK;
+            evt.modifiers |= java.awt.event.InputEvent.ALT_MASK;
 
         switch(keycode) {
             case KeyEvent.KEYCODE_DEL:

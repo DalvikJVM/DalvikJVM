@@ -340,11 +340,11 @@ public class MainCanvas extends View {
                 evt._awtAmount = 3;
 
                 if (shift)
-                    evt._awtModifier |= InputEvent.SHIFT_DOWN_MASK;
+                    evt.modifiers |= InputEvent.SHIFT_DOWN_MASK;
                 if (ctrl)
-                    evt._awtModifier |= InputEvent.CTRL_DOWN_MASK;
+                    evt.modifiers |= InputEvent.CTRL_DOWN_MASK;
                 if (alt)
-                    evt._awtModifier |= InputEvent.ALT_DOWN_MASK;
+                    evt.modifiers |= InputEvent.ALT_DOWN_MASK;
 
                 float invAxisY = (1.0f - Math.abs(axisY) + JOYSTICK_DEADZONE) * Math.signum(axisY);
                 long delayTime = (long)Math.abs(MOUSE_WHEEL_REPEAT_DELAY * invAxisY);
@@ -420,11 +420,11 @@ public class MainCanvas extends View {
                 evt.y = (int) (DalvikJVM.getTarget().getHeight() * yScale) - translatePoint.y;
 
                 if (shift)
-                    evt._awtModifier |= InputEvent.SHIFT_DOWN_MASK;
+                    evt.modifiers |= InputEvent.SHIFT_DOWN_MASK;
                 if (ctrl)
-                    evt._awtModifier |= InputEvent.CTRL_DOWN_MASK;
+                    evt.modifiers |= InputEvent.CTRL_DOWN_MASK;
                 if (alt)
-                    evt._awtModifier |= InputEvent.ALT_DOWN_MASK;
+                    evt.modifiers |= InputEvent.ALT_DOWN_MASK;
                 DalvikJVM.instance.addEventQueue(evt);
                 canTouchpadClick = false;
             }
@@ -444,18 +444,17 @@ public class MainCanvas extends View {
                     evt.y = (int) (DalvikJVM.getTarget().getHeight() * yScale) - translatePoint.y;
 
                     if (shift)
-                        evt._awtModifier |= InputEvent.SHIFT_DOWN_MASK;
+                        evt.modifiers |= InputEvent.SHIFT_DOWN_MASK;
                     if (ctrl)
-                        evt._awtModifier |= InputEvent.CTRL_DOWN_MASK;
+                        evt.modifiers |= InputEvent.CTRL_DOWN_MASK;
                     if (alt)
-                        evt._awtModifier |= InputEvent.ALT_DOWN_MASK;
+                        evt.modifiers |= InputEvent.ALT_DOWN_MASK;
 
                     DalvikJVM.instance.addEventQueue(evt);
                     Event upEvent = new Event(evt.target, Event.MOUSE_UP, evt.arg);
                     upEvent.x = evt.x;
                     upEvent.y = evt.y;
                     upEvent.modifiers = evt.modifiers;
-                    upEvent._awtModifier = evt._awtModifier;
                     upEvent.when = evt.when + TOUCHPAD_CLICK_DELAY;
                     DalvikJVM.instance.addEventQueue(upEvent);
                     canTouchpadClick = false;
@@ -481,13 +480,13 @@ public class MainCanvas extends View {
                 evt.modifiers |= Event.META_MASK;
 
                 if (shift)
-                    evt._awtModifier |= InputEvent.SHIFT_DOWN_MASK;
+                    evt.modifiers |= InputEvent.SHIFT_DOWN_MASK;
                 if (ctrl)
-                    evt._awtModifier |= InputEvent.CTRL_DOWN_MASK;
+                    evt.modifiers |= InputEvent.CTRL_DOWN_MASK;
                 if (alt)
-                    evt._awtModifier |= InputEvent.ALT_DOWN_MASK;
+                    evt.modifiers |= InputEvent.ALT_DOWN_MASK;
 
-                evt._awtModifier |= InputEvent.BUTTON3_DOWN_MASK | InputEvent.META_DOWN_MASK;
+                evt.modifiers |= InputEvent.BUTTON3_DOWN_MASK | InputEvent.META_DOWN_MASK;
 
                 DalvikJVM.instance.addEventQueue(evt);
                 Event upEvent = new Event(DalvikJVM.getTarget(), Event.MOUSE_UP, null);
@@ -495,7 +494,6 @@ public class MainCanvas extends View {
                 upEvent.y = evt.y;
                 upEvent.when = evt.when + TOUCHPAD_CLICK_DELAY;
                 upEvent.modifiers = evt.modifiers;
-                upEvent._awtModifier = evt._awtModifier;
                 DalvikJVM.instance.addEventQueue(upEvent);
                 canTouchpadClick = false;
                 touchpadClickCount = 0;
@@ -663,14 +661,14 @@ public class MainCanvas extends View {
             evt.x = (int) (DalvikJVM.getTarget().getWidth() * xScale) - translatePoint.x;
             evt.y = (int) (DalvikJVM.getTarget().getHeight() * yScale) - translatePoint.y;
 
-            int buttonMask = java.awt.event.InputEvent.BUTTON1_DOWN_MASK;
+            int buttonMask = InputEvent.BUTTON1_DOWN_MASK;
 
             if (shift)
-                evt._awtModifier |= InputEvent.SHIFT_DOWN_MASK;
+                evt.modifiers |= InputEvent.SHIFT_DOWN_MASK;
             if (ctrl)
-                evt._awtModifier |= InputEvent.CTRL_DOWN_MASK;
+                evt.modifiers |= InputEvent.CTRL_DOWN_MASK;
             if (alt)
-                evt._awtModifier |= InputEvent.ALT_DOWN_MASK;
+                evt.modifiers |= InputEvent.ALT_DOWN_MASK;
 
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
@@ -750,7 +748,7 @@ public class MainCanvas extends View {
                     break;
             }
 
-            evt._awtModifier |= buttonMask;
+            evt.modifiers |= buttonMask;
 
             if (updateLastTouch) {
                 if (event.getPointerCount() <= 1) {

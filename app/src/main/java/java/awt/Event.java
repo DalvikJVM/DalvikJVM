@@ -27,10 +27,9 @@ public class Event {
     public int id;
     public int key;
     public Object arg;
-    public int modifiers;
     public char _keyChar;
     public int _awtKey;
-    public int _awtModifier;
+    public int modifiers;
     public int _awtAmount;
 
     public static final int SHIFT_MASK = 1;
@@ -59,18 +58,18 @@ public class Event {
         this.target = target;
         this.id = id;
         this.arg = arg;
-        this.when = System.currentTimeMillis();
+        this.when = when;
+        this.modifiers = modifiers;
+        this.key = key;
+        this.x = x;
+        this.y = y;
 
-
-        key = -1;
         _keyChar = '\0';
         _awtKey = -1;
-        _awtModifier = 0;
     }
 
     public Event(Object target, int id, Object arg) {
-        // TODO: Fill in x, y, etc.
-        this(target, System.currentTimeMillis(), id, 0, 0, 0, 0, arg);
+        this(target, System.currentTimeMillis(), id, -1, -1, -1, 0, arg);
     }
 
     public int _getKey() {

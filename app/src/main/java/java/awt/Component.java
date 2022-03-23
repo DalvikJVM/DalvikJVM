@@ -123,7 +123,6 @@ public abstract class Component implements ImageObserver {
         evt.x = e.x;
         evt.y = e.y;
         evt.modifiers = e.modifiers;
-        evt._awtModifier = e._awtModifier;
         component.dispatchComponentEvent(evt);
     }
 
@@ -136,7 +135,6 @@ public abstract class Component implements ImageObserver {
         evt.x = e.x;
         evt.y = e.y;
         evt.modifiers = e.modifiers;
-        evt._awtModifier = e._awtModifier;
         component.dispatchComponentEvent(evt);
     }
 
@@ -152,7 +150,7 @@ public abstract class Component implements ImageObserver {
         FocusEvent focusEvent = null;
 
         int mouseButton = MouseEvent.BUTTON1;
-        if ((event._awtModifier & InputEvent.BUTTON3_DOWN_MASK) == InputEvent.BUTTON3_DOWN_MASK)
+        if ((event.modifiers & InputEvent.BUTTON3_DOWN_MASK) == InputEvent.BUTTON3_DOWN_MASK)
             mouseButton = MouseEvent.BUTTON3;
 
         switch (event.id) {
@@ -163,36 +161,36 @@ public abstract class Component implements ImageObserver {
                 focusEvent = new FocusEvent((Component)event.arg, FocusEvent.FOCUS_LOST);
                 break;
             case Event.KEY_PRESS:
-                keyEvent = new KeyEvent(this, KeyEvent.KEY_PRESSED, event.when, event._awtModifier,
+                keyEvent = new KeyEvent(this, KeyEvent.KEY_PRESSED, event.when, event.modifiers,
                                             event._awtKey==-1?event.key:event._awtKey, event._keyChar);
                 break;
             case Event.KEY_RELEASE:
-                keyEvent = new KeyEvent(this, KeyEvent.KEY_RELEASED, event.when, event._awtModifier,
+                keyEvent = new KeyEvent(this, KeyEvent.KEY_RELEASED, event.when, event.modifiers,
                                             event._awtKey==-1?event.key:event._awtKey, event._keyChar);
                 break;
             case Event.MOUSE_DOWN:
-                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_PRESSED, event.when, event._awtModifier, event.x, event.y, 1, false, mouseButton);
+                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_PRESSED, event.when, event.modifiers, event.x, event.y, 1, false, mouseButton);
                 break;
             case Event.MOUSE_UP:
-                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_RELEASED, event.when, event._awtModifier, event.x, event.y, 1, false, mouseButton);
+                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_RELEASED, event.when, event.modifiers, event.x, event.y, 1, false, mouseButton);
                 break;
             case Event.MOUSE_MOVE:
-                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_MOVED, event.when, event._awtModifier, event.x, event.y, 1, false, 0);
+                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_MOVED, event.when, event.modifiers, event.x, event.y, 1, false, 0);
                 break;
             case Event.MOUSE_DRAG:
-                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_DRAGGED, event.when, event._awtModifier, event.x, event.y, 1, false, mouseButton);
+                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_DRAGGED, event.when, event.modifiers, event.x, event.y, 1, false, mouseButton);
                 break;
             case Event.MOUSE_ENTER:
-                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_ENTERED, event.when, event._awtModifier, event.x, event.y, 0, false, 0);
+                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_ENTERED, event.when, event.modifiers, event.x, event.y, 0, false, 0);
                 break;
             case Event.MOUSE_EXIT:
-                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_EXITED, event.when, event._awtModifier, event.x, event.y, 0, false, 0);
+                mouseEvent = new MouseEvent(this, MouseEvent.MOUSE_EXITED, event.when, event.modifiers, event.x, event.y, 0, false, 0);
                 break;
             case Event._MOUSE_SCROLL_UP:
-                mouseWheelEvent = new MouseWheelEvent(this, MouseEvent.MOUSE_WHEEL, event.when, event._awtModifier, event.x, event.y, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, event._awtAmount, -1);
+                mouseWheelEvent = new MouseWheelEvent(this, MouseEvent.MOUSE_WHEEL, event.when, event.modifiers, event.x, event.y, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, event._awtAmount, -1);
                 break;
             case Event._MOUSE_SCROLL_DOWN:
-                mouseWheelEvent = new MouseWheelEvent(this, MouseEvent.MOUSE_WHEEL, event.when, event._awtModifier, event.x, event.y, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, event._awtAmount, 1);
+                mouseWheelEvent = new MouseWheelEvent(this, MouseEvent.MOUSE_WHEEL, event.when, event.modifiers, event.x, event.y, 0, false, MouseWheelEvent.WHEEL_UNIT_SCROLL, event._awtAmount, 1);
                 break;
         }
 
@@ -223,21 +221,6 @@ public abstract class Component implements ImageObserver {
 
         // AWT 1.0 event handler
         handleEvent(event);
-    }
-
-    private boolean _handleEvent(Component component, Event event)
-    {
-        if (component.handleEvent(event))
-            return true;
-
-        synchronized (childLock) {
-            for (Component child : component.children) {
-                if (_handleEvent(child, event))
-                    return true;
-            }
-        }
-
-        return false;
     }
 
     public boolean _withinBounds(int x, int y) {
