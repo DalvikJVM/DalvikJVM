@@ -60,6 +60,11 @@ public abstract class Component implements ImageObserver {
     protected Color foregroundColor;
 
     Object childLock = new Object();
+    Object mouseListenerLock = new Object();
+    Object mouseMotionListenerLock = new Object();
+    Object mouseWheelListenerLock = new Object();
+    Object keyListenerLock = new Object();
+    Object focusListenerLock = new Object();
 
     protected Dimension preferredSize;
 
@@ -240,9 +245,12 @@ public abstract class Component implements ImageObserver {
     }
 
     public MouseListener[] getMouseListeners() {
-        MouseListener[] array = new MouseListener[mouseListeners.size()];
-        for (int i = 0; i < mouseListeners.size(); i++)
-            array[i] = mouseListeners.get(i);
+        MouseListener[] array;
+        synchronized (mouseListenerLock) {
+            array = new MouseListener[mouseListeners.size()];
+            for (int i = 0; i < mouseListeners.size(); i++)
+                array[i] = mouseListeners.get(i);
+        }
         return array;
     }
 
@@ -250,18 +258,20 @@ public abstract class Component implements ImageObserver {
         if (event.isConsumed())
             return;
 
-        for (KeyListener listener : component.keyListeners) {
-            switch (event.getID()) {
-                case KeyEvent.KEY_PRESSED:
-                    listener.keyPressed(event);
-                    if (event.getKeyChar() != '\n') {
-                        event.id = KeyEvent.KEY_TYPED;
-                        listener.keyTyped(event);
-                    }
-                    break;
-                case KeyEvent.KEY_RELEASED:
-                    listener.keyReleased(event);
-                    break;
+        synchronized (keyListenerLock) {
+            for (KeyListener listener : component.keyListeners) {
+                switch (event.getID()) {
+                    case KeyEvent.KEY_PRESSED:
+                        listener.keyPressed(event);
+                        if (event.getKeyChar() != '\n') {
+                            event.id = KeyEvent.KEY_TYPED;
+                            listener.keyTyped(event);
+                        }
+                        break;
+                    case KeyEvent.KEY_RELEASED:
+                        listener.keyReleased(event);
+                        break;
+                }
             }
         }
 
@@ -303,31 +313,35 @@ public abstract class Component implements ImageObserver {
 
         event.translatePoint(-component.getX(), -component.getY());
 
-        for (MouseListener listener : component.mouseListeners) {
-            switch (event.getID()) {
-                case MouseEvent.MOUSE_PRESSED:
-                    listener.mousePressed(event);
-                    break;
-                case MouseEvent.MOUSE_RELEASED:
-                    listener.mouseReleased(event);
-                    break;
-                case MouseEvent.MOUSE_ENTERED:
-                    listener.mouseEntered(event);
-                    break;
-                case MouseEvent.MOUSE_EXITED:
-                    listener.mouseExited(event);
-                    break;
+        synchronized (mouseListenerLock) {
+            for (MouseListener listener : component.mouseListeners) {
+                switch (event.getID()) {
+                    case MouseEvent.MOUSE_PRESSED:
+                        listener.mousePressed(event);
+                        break;
+                    case MouseEvent.MOUSE_RELEASED:
+                        listener.mouseReleased(event);
+                        break;
+                    case MouseEvent.MOUSE_ENTERED:
+                        listener.mouseEntered(event);
+                        break;
+                    case MouseEvent.MOUSE_EXITED:
+                        listener.mouseExited(event);
+                        break;
+                }
             }
         }
 
-        for (MouseMotionListener listener : component.mouseMotionListeners) {
-            switch (event.getID()) {
-                case MouseEvent.MOUSE_MOVED:
-                    listener.mouseMoved(event);
-                    break;
-                case MouseEvent.MOUSE_DRAGGED:
-                    listener.mouseDragged(event);
-                    break;
+        synchronized (mouseMotionListenerLock) {
+            for (MouseMotionListener listener : component.mouseMotionListeners) {
+                switch (event.getID()) {
+                    case MouseEvent.MOUSE_MOVED:
+                        listener.mouseMoved(event);
+                        break;
+                    case MouseEvent.MOUSE_DRAGGED:
+                        listener.mouseDragged(event);
+                        break;
+                }
             }
         }
 
@@ -343,12 +357,14 @@ public abstract class Component implements ImageObserver {
 
         event.translatePoint(-component.getX(), -component.getY());
 
-        for (MouseWheelListener listener : component.mouseWheelListeners) {
-            switch (event.getID()) {
-                case MouseEvent.MOUSE_WHEEL:
-                    System.out.println("Listener event fired");
-                    listener.mouseWheelMoved(event);
-                    break;
+        synchronized (mouseWheelListenerLock) {
+            for (MouseWheelListener listener : component.mouseWheelListeners) {
+                switch (event.getID()) {
+                    case MouseEvent.MOUSE_WHEEL:
+                        System.out.println("Listener event fired");
+                        listener.mouseWheelMoved(event);
+                        break;
+                }
             }
         }
 
@@ -359,14 +375,16 @@ public abstract class Component implements ImageObserver {
     }
 
     public void _handleFocusEvent(Component component, FocusEvent event) {
-        for (FocusListener listener : component.focusListeners) {
-            switch (event.getID()) {
-                case KeyEvent.KEY_PRESSED:
-                    listener.focusGained(event);
-                    break;
-                case KeyEvent.KEY_RELEASED:
-                    listener.focusLost(event);
-                    break;
+        synchronized (focusListenerLock) {
+            for (FocusListener listener : component.focusListeners) {
+                switch (event.getID()) {
+                    case KeyEvent.KEY_PRESSED:
+                        listener.focusGained(event);
+                        break;
+                    case KeyEvent.KEY_RELEASED:
+                        listener.focusLost(event);
+                        break;
+                }
             }
         }
 
@@ -423,53 +441,73 @@ public abstract class Component implements ImageObserver {
     }
 
     public void addKeyListener(KeyListener listener) {
-        if (!keyListeners.contains(listener))
-            keyListeners.add(listener);
+        synchronized (keyListenerLock) {
+            if (!keyListeners.contains(listener))
+                keyListeners.add(listener);
+        }
     }
 
     public void removeKeyListener(KeyListener listener) {
-        if (keyListeners.contains(listener))
-            keyListeners.remove(listener);
+        synchronized (keyListenerLock) {
+            if (keyListeners.contains(listener))
+                keyListeners.remove(listener);
+        }
     }
 
     public void addFocusListener(FocusListener listener) {
-        if (!focusListeners.contains(listener))
-            focusListeners.add(listener);
+        synchronized (focusListenerLock) {
+            if (!focusListeners.contains(listener))
+                focusListeners.add(listener);
+        }
     }
 
     public void removeFocusListener(FocusListener listener) {
-        if (focusListeners.contains(listener))
-            focusListeners.remove(listener);
+        synchronized (focusListenerLock) {
+            if (focusListeners.contains(listener))
+                focusListeners.remove(listener);
+        }
     }
 
     public void addMouseListener(MouseListener listener) {
-        if (!mouseListeners.contains(listener))
-            mouseListeners.add(listener);
+        synchronized (mouseListenerLock) {
+            if (!mouseListeners.contains(listener))
+                mouseListeners.add(listener);
+        }
     }
 
     public void removeMouseListener(MouseListener listener) {
-        if (mouseListeners.contains(listener))
-            mouseListeners.remove(listener);
+        synchronized (mouseListenerLock) {
+            if (mouseListeners.contains(listener))
+                mouseListeners.remove(listener);
+        }
     }
 
     public void addMouseMotionListener(MouseMotionListener listener) {
-        if (!mouseMotionListeners.contains(listener))
-            mouseMotionListeners.add(listener);
+        synchronized (mouseMotionListenerLock) {
+            if (!mouseMotionListeners.contains(listener))
+                mouseMotionListeners.add(listener);
+        }
     }
 
     public void removeMouseMotionListener(MouseMotionListener listener) {
-        if (mouseMotionListeners.contains(listener))
-            mouseMotionListeners.remove(listener);
+        synchronized (mouseMotionListenerLock) {
+            if (mouseMotionListeners.contains(listener))
+                mouseMotionListeners.remove(listener);
+        }
     }
 
     public void addMouseWheelListener(MouseWheelListener listener) {
-        if (!mouseWheelListeners.contains(listener))
-            mouseWheelListeners.add(listener);
+        synchronized (mouseWheelListenerLock) {
+            if (!mouseWheelListeners.contains(listener))
+                mouseWheelListeners.add(listener);
+        }
     }
 
     public void removeMouseWheelListener(MouseWheelListener listener) {
-        if (mouseWheelListeners.contains(listener))
-            mouseWheelListeners.remove(listener);
+        synchronized (mouseWheelListenerLock) {
+            if (mouseWheelListeners.contains(listener))
+                mouseWheelListeners.remove(listener);
+        }
     }
 
     public void setBackground(Color c) {
