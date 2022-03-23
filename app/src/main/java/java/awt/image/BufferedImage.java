@@ -121,7 +121,38 @@ public class BufferedImage extends Image implements ImageConsumer, RenderedImage
 
     @Override
     public void setPixels(int x, int y, int w, int h, ColorModel model, byte[] bytePixels, int off, int scansize) {
-        System.out.println("Unimplemented method BufferedImage.setPixels(" + x + ", " + y + ", " + w + ", " + h + ")");
+        int bpp = model.pixel_bits / 8;
+
+        Bitmap bitmap = _getBitmap();
+
+        int[] pixels = new int[(h * scansize) + scansize];
+
+        for (int x2 = 0; x2 < scansize; x2++) {
+            for (int y2 = 0; y2 < h; y2++) {
+                int index = ((y + y2) * scansize) + (x + x2);
+                int byteIndex = ((y + y2) * scansize * bpp) + ((x + x2) * bpp);
+
+                int argb = 0xFF000000;
+
+                if (model instanceof IndexColorModel) {
+                    IndexColorModel colorModel = (IndexColorModel)model;
+                    int modelIndex = bytePixels[byteIndex];
+                    int r = colorModel.r[modelIndex] & 0xFF;
+                    int g = colorModel.g[modelIndex] & 0xFF;
+                    int b = colorModel.b[modelIndex] & 0xFF;
+                    int a = 0xFF;
+                    if (colorModel.a != null)
+                        a = colorModel.a[modelIndex] & 0xFF;
+                    argb = (a << 24) | (r << 16) | (g << 8) | b;
+                } else {
+                    System.out.println("[FIXME] Unimplemented BufferedImage.setPixels color model!");
+                }
+
+                pixels[index] = argb;
+            }
+        }
+
+        bitmap.setPixels(pixels, off, scansize, 0, 0, w, h);
     }
 
     @Override
