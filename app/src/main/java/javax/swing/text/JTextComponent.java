@@ -22,6 +22,16 @@ package javax.swing.text;
 import javax.swing.*;
 
 public class JTextComponent extends JComponent {
+    protected String text = "";
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public void setEditable(boolean b) {
         System.out.println("Unimplemented method JTextComponent.setEditable(" + b + ") called");
     }
