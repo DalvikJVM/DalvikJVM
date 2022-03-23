@@ -20,6 +20,7 @@
 package java.awt;
 
 public class EventDispatchThread implements Runnable {
+    public static EventDispatchThread instance;
     private EventQueue queue;
     public Thread thread;
 
@@ -27,6 +28,8 @@ public class EventDispatchThread implements Runnable {
         this.queue = queue;
         this.thread = new Thread(this);
         this.thread.start();
+
+        instance = this;
     }
 
     @Override

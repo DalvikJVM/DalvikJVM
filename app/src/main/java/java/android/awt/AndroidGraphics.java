@@ -159,6 +159,7 @@ public class AndroidGraphics extends Graphics2D {
         paint.setTypeface(currentFont._getTypeface());
         paint.setTextSize(currentFont.getSize());
         paint.setAlpha((int)(alphaComposite.getAlpha() * 255.0f));
+        paint.setStyle(Paint.Style.FILL);
         canvas.drawText(str, x, y, paint);
     }
 

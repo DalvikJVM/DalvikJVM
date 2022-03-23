@@ -32,6 +32,11 @@ public class SwingUtilities {
         return e.isMetaDown();
     }
 
+    public static boolean isEventDispatchThread() {
+        // TODO: Check this, threads may be all whacked out
+        return (Thread.currentThread() == EventDispatchThread.instance.thread);
+    }
+
     public static void invokeLater(Runnable runnable) {
         EventQueue.invokeLater(runnable);
     }
