@@ -286,17 +286,13 @@ public abstract class Component implements ImageObserver {
             case Event.MOUSE_DRAG:
                 return mouseDrag(event, event.x, event.y);
             case Event.MOUSE_ENTER:
-                //return mouseEnter(event, event.x, event.y);
-                break;
+                return mouseEnter(event, event.x, event.y);
             case Event.MOUSE_EXIT:
-                //return mouseExit(event, event.x, event.y);
-                break;
+                return mouseExit(event, event.x, event.y);
             case Event.GOT_FOCUS:
-                //return gotFocus(event, event.arg);
-                break;
+                return gotFocus(event, event.arg);
             case Event.LOST_FOCUS:
-                //return lostFocus(event, event.arg);
-                break;
+                return lostFocus(event, event.arg);
         }
         return false;
     }
@@ -665,11 +661,27 @@ public abstract class Component implements ImageObserver {
         return false;
     }
 
+    public boolean mouseEnter(Event evt, int x, int y) {
+        return false;
+    }
+
+    public boolean mouseExit(Event evt, int x, int y) {
+        return false;
+    }
+
     public boolean keyDown(Event evt, int key) {
         return false;
     }
 
     public boolean keyUp(Event evt, int key) {
+        return false;
+    }
+
+    public boolean gotFocus(Event evt, Object what) {
+        return false;
+    }
+
+    public boolean lostFocus(Event evt, Object what) {
         return false;
     }
 }
