@@ -70,7 +70,7 @@ public class Event {
 
     public Event(Object target, int id, Object arg) {
         // TODO: Fill in x, y, etc.
-        this(target, System.currentTimeMillis(), id, 0, 0, 0, 0, null);
+        this(target, System.currentTimeMillis(), id, 0, 0, 0, 0, arg);
     }
 
     public int _getKey() {

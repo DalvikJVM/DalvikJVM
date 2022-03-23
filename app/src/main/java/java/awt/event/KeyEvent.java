@@ -39,6 +39,10 @@ public class KeyEvent extends InputEvent {
         return keyCode;
     }
 
+    public int getExtendedKeyCode() {
+        return getKeyCode();
+    }
+
     public char getKeyChar() {
         return keyChar;
     }

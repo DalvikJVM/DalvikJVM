@@ -222,7 +222,7 @@ public abstract class Component implements ImageObserver {
         }
 
         // AWT 1.0 event handler
-        _handleEvent(this, event);
+        handleEvent(event);
     }
 
     private boolean _handleEvent(Component component, Event event)
@@ -264,6 +264,9 @@ public abstract class Component implements ImageObserver {
     }
 
     public void _handleKeyboardEvent(Component component, KeyEvent event) {
+        if (event.isConsumed())
+            return;
+
         for (KeyListener listener : component.keyListeners) {
             switch (event.getID()) {
                 case KeyEvent.KEY_PRESSED:
@@ -316,6 +319,9 @@ public abstract class Component implements ImageObserver {
     }
 
     public void _handleMouseEvent(Component component, MouseEvent event) {
+        if (event.isConsumed())
+            return;
+
         event.translatePoint(-component.getX(), -component.getY());
 
         for (MouseListener listener : component.mouseListeners) {
@@ -353,6 +359,9 @@ public abstract class Component implements ImageObserver {
     }
 
     public void _handleMouseWheelEvent(Component component, MouseWheelEvent event) {
+        if (event.isConsumed())
+            return;
+
         event.translatePoint(-component.getX(), -component.getY());
 
         for (MouseWheelListener listener : component.mouseWheelListeners) {
@@ -549,8 +558,7 @@ public abstract class Component implements ImageObserver {
     }
 
     public boolean hasFocus() {
-        System.out.println("Unimplemented method Component.hasFocus() called");
-        return true;
+        return (DalvikJVM.renderTarget == this);
     }
 
     public void requestFocus() {
