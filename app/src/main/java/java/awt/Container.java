@@ -38,8 +38,9 @@ public abstract class Container extends Component {
     }
 
     public Insets getInsets() {
+        // TODO: If we ever emulate window borders, we need to set this
         System.out.println("Unimplemented method Container.getInsets() called");
-        return new Insets(getX(), getY(), getWidth(), getHeight());
+        return new Insets(0, 0, 0, 0);
     }
 
     public Dimension getMinimumSize() {
