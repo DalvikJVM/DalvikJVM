@@ -55,9 +55,13 @@ public class JFileChooser extends JComponent {
 
         if (path.contains("com.android.externalstorage.documents")) {
             int index = path.indexOf('%') + 3;
-            filePath = path.substring(index).replaceAll("%2F", "/");
+            filePath = path.substring(index);
             path = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
+
+        // Sanitize
+        filePath = filePath .replaceAll("%2F", "/")
+                            .replaceAll("%20", " ");
 
         String fullPath = path + File.separator + filePath;
 
