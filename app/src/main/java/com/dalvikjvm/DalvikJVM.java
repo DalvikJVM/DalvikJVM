@@ -530,6 +530,9 @@ public class DalvikJVM extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
+        inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        AndroidGraphicsDevice.setupDisplayMode(MainCanvas.instance.getWidth(), MainCanvas.instance.getHeight());
+
         // Check if we need to request permissions
         List<String> permissionRequest = new ArrayList<String>();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED)
@@ -543,10 +546,9 @@ public class DalvikJVM extends AppCompatActivity {
         if (permissionRequest.size() > 0) {
             String[] permissions = permissionRequest.toArray(new String[0]);
             ActivityCompat.requestPermissions(DalvikJVM.this, permissions, _PERMISSION_SELECT_CODE);
+        } else {
+            initDalvikJVM();
         }
-
-        inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        AndroidGraphicsDevice.setupDisplayMode(MainCanvas.instance.getWidth(), MainCanvas.instance.getHeight());
 
         final Button button = findViewById(R.id.button_launch);
         button.setEnabled(getTarget() == null);
