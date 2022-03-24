@@ -525,7 +525,6 @@ public class MainCanvas extends View {
         Rect drawDstRect = new Rect(dstRect.left, dstRect.top + yOffset, dstRect.right, dstRect.bottom + yOffset);
 
         // Draw java buffer
-        DalvikJVM.getTarget().repaint();
         DalvikJVM.getTarget()._paint(canvas, paint);
         graphics._present(canvas, paint, srcRect, drawDstRect);
 
