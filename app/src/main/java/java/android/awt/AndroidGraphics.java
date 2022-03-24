@@ -50,6 +50,18 @@ public class AndroidGraphics extends Graphics2D {
         }
     }
 
+    public void _setPixels(int[] pixels, int offset, int stride, int x, int y, int w, int h) {
+        synchronized (renderLock) {
+            backbuffer.setPixels(pixels, offset, stride, x, y, w, h);
+        }
+    }
+
+    public void _getPixels(int[] pixels, int offset, int stride, int x, int y, int w, int h) {
+        synchronized (renderLock) {
+            backbuffer.getPixels(pixels, offset, stride, x, y, w, h);
+        }
+    }
+
     public AndroidGraphics(AndroidGraphics graphics) {
         backbuffer = graphics._getBitmap();
         canvas = graphics._getCanvas();

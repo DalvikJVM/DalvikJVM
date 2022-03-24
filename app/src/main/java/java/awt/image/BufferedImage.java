@@ -116,7 +116,7 @@ public class BufferedImage extends Image implements ImageConsumer, RenderedImage
     }
 
     public void getPixels(int x, int y, int w, int h, int[] pix, int off, int scansize) {
-        _getBitmap().getPixels(pix, off, scansize, x, y, w, h);
+        graphics._getPixels(pix, off, scansize, x, y, w, h);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class BufferedImage extends Image implements ImageConsumer, RenderedImage
             }
         }
 
-        bitmap.setPixels(pixels, off, scansize, 0, 0, w, h);
+        graphics._setPixels(pixels, off, scansize, 0, 0, w, h);
     }
 
     @Override
@@ -173,7 +173,7 @@ public class BufferedImage extends Image implements ImageConsumer, RenderedImage
         if (y + h > bitmap.getHeight())
             h = bitmap.getHeight() - y;
 
-        bitmap.setPixels(pixels, off, scansize, x, y, w, h);
+        graphics._setPixels(pixels, off, scansize, x, y, w, h);
         System.out.println("Unimplemented method BufferedImage.setPixels(" + x + ", " + y + ", " + w + ", " + h + ")");
     }
 

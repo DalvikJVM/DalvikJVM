@@ -109,6 +109,7 @@ public abstract class Component implements ImageObserver {
             int x2 = x1 + srcRect.width();
             int y2 = y1 + srcRect.height();
             Rect dstRect = new Rect(x1, y1, x2, y2);
+            System.out.println("DRAW_LAYER " + this);
             graphics._present(canvas, paint, srcRect, dstRect);
         }
 
