@@ -33,9 +33,11 @@ public class AndroidGraphics extends Graphics2D {
     protected Paint paint;
     protected AlphaComposite alphaComposite = AlphaComposite.SrcOver;
     protected Object renderLock = new Object();
+    protected Component parent;
 
     public AndroidGraphics(Component parent) {
         this(parent.getWidth(), parent.getHeight());
+        this.parent = parent;
     }
 
     @Override

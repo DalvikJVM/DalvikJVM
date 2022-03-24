@@ -56,10 +56,12 @@ public class JProgressBar extends JComponent {
 
     public void setMaximum(int value) {
         this.max = value;
+        repaint();
     }
 
     public void setValue(int value) {
         this.value = value;
+        repaint();
     }
 
     public void setBorderPainted(boolean paint) {
@@ -72,5 +74,6 @@ public class JProgressBar extends JComponent {
 
     public void setString(String text) {
         this.text = text;
+        repaint();
     }
 }

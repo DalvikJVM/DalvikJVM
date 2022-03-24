@@ -583,12 +583,13 @@ public abstract class Component implements ImageObserver {
     }
 
     public void repaint() {
-        // TODO: Look at this or some shit
-        System.out.println("REPAINT");
+        // TODO: Look at this
         update(getGraphics());
 
-        for (Component component : children)
-            component.repaint();
+        synchronized (childLock) {
+            for (Component component : children)
+                component.repaint();
+        }
     }
 
     public void paint(Graphics g) {

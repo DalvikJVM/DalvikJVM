@@ -459,6 +459,7 @@ public class DalvikJVM extends AppCompatActivity {
 
     public static void setTarget(Component component) {
         renderTarget = component;
+        renderTarget.repaint();
         System.out.println("RENDER TARGET: " + component);
     }
 
