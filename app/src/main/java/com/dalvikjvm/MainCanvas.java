@@ -527,7 +527,7 @@ public class MainCanvas extends View {
         // Draw java buffer
         DalvikJVM.getTarget().repaint();
         DalvikJVM.getTarget()._paint(canvas, paint);
-        canvas.drawBitmap(graphics._getBitmap(), srcRect, drawDstRect, paint);
+        graphics._present(canvas, paint, srcRect, drawDstRect);
 
         // Draw Mouse
         float mouseScale = 0.3725f;
