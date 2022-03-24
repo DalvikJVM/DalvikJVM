@@ -520,8 +520,6 @@ public class DalvikJVM extends AppCompatActivity {
         File fileHomeDir = new File(homeDir);
         if (!fileHomeDir.exists())
             fileHomeDir.mkdirs();
-
-        AndroidGraphicsDevice.setupDisplayMode(MainCanvas.instance.getWidth(), MainCanvas.instance.getHeight());
     }
 
     @Override
@@ -548,9 +546,7 @@ public class DalvikJVM extends AppCompatActivity {
         }
 
         inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        // Initialize JVM
-        initDalvikJVM();
+        AndroidGraphicsDevice.setupDisplayMode(MainCanvas.instance.getWidth(), MainCanvas.instance.getHeight());
 
         final Button button = findViewById(R.id.button_launch);
         button.setEnabled(getTarget() == null);
@@ -597,6 +593,16 @@ public class DalvikJVM extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case _PERMISSION_SELECT_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    initDalvikJVM();
+                break;
+        }
     }
 
     public static float convertDpToPixel(float dp) {
